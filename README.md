@@ -18,6 +18,11 @@
   <img src="https://img.shields.io/badge/coverage-100%25%20branches-F8952D?style=flat-square&logo=jacoco&logoColor=white" alt="JaCoCo"/>
 </p>
 
+> 🌐 **This is the web version of ScholarMatch**, rebuilding the original Java desktop app
+> (below) as a web application on top of the same backend API. The new Next.js client lives in
+> [`web/`](./web). This repo is a fork of the original CSC207 course project — full credit to
+> the original team and repo: [Guancheng-Chen/ScholarMatch](https://github.com/Guancheng-Chen/ScholarMatch).
+
 *A cross-platform Java desktop app that helps students, researchers, and academics discover collaborators, post and apply to research opportunities, and message their matches — an "Academic Matchmaking and Collaboration Network."*
 
 ScholarMatch was built as a course project for CSC207 (Software Design) at the University of Toronto. Beyond satisfying the course's Clean Architecture requirements, it targets a real gap: researchers and students often struggle to find collaborators who share their research interests, and existing academic networking tools are either too broad (LinkedIn) or too narrow (lab-internal mailing lists).
