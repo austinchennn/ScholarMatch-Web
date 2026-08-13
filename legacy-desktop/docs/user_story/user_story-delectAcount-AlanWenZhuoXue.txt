@@ -1,1 +1,0 @@
-As a logged-in ScholarMatch user, I want to delete my account so that I can permanently remove my personal profile and data from the ScholarMatch system.

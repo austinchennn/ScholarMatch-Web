@@ -21,7 +21,6 @@ messaging for confirmed matches.*
 > 🌐 This is the web rebuild of **ScholarMatch**, originally a Java desktop app built as a
 > CSC207 (Software Design) course project at the University of Toronto. Full credit to the
 > original team and repo: [Guancheng-Chen/ScholarMatch](https://github.com/Guancheng-Chen/ScholarMatch).
-> The original desktop client is kept for reference at [`legacy-desktop/`](./legacy-desktop).
 
 ## Tech stack
 
@@ -67,6 +66,5 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Repo layout
 
-- `src/` — the Next.js app (this is the whole point of the repo now)
-- `legacy-desktop/` — the original Java Swing desktop client, archived, not developed further
-- `docs/api/` — the backend API contract (shared reference for both the web and legacy desktop clients)
+- `src/` — the Next.js app
+- `docs/api/` — the backend API contract

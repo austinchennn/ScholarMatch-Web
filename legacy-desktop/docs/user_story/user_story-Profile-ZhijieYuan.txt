@@ -1,2 +1,0 @@
-As a researcher, I want to view and update my ScholarMatch profile with my current background, research interests,
-and publications from paper lookup so that potential collaborators can understand my work before deciding whether to connect.
