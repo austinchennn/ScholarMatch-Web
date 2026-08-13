@@ -171,3 +171,47 @@ export function dislike(token: string, dislikedScholarId: string) {
 export function getMatches(token: string) {
   return request<ScholarProfile[]>("/api/matches", { token });
 }
+
+export interface PublicScholarProfile {
+  scholarId: string;
+  displayName: string;
+  institution?: string | null;
+  academicLevel?: string | null;
+  researchField?: string | null;
+  lookingFor?: string | null;
+  collaborationDescription?: string | null;
+  researchDescription?: string | null;
+  weeklyAvailabilityHours?: number | null;
+  fundingStatus?: string | null;
+  avatarUrl?: string | null;
+  hIndex?: number | null;
+  totalCitations?: number | null;
+  researchInterests?: string[];
+  papers?: Paper[];
+  educations?: EducationEntry[];
+  academicEmailVerified?: boolean;
+}
+
+export function getPublicProfile(token: string, scholarId: string) {
+  return request<PublicScholarProfile>(`/api/scholars/${scholarId}/public-profile`, { token });
+}
+
+export interface Message {
+  messageId: string;
+  senderId: string;
+  receiverId: string;
+  content: string;
+  sentAt: string;
+}
+
+export function sendMessage(token: string, receiverId: string, content: string) {
+  return request<Message>("/api/messages", {
+    method: "POST",
+    token,
+    body: JSON.stringify({ receiverId, content }),
+  });
+}
+
+export function getConversation(token: string, otherScholarId: string) {
+  return request<Message[]>(`/api/messages/${otherScholarId}`, { token });
+}
