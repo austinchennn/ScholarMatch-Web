@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ApiError, getPublicProfile } from "@/lib/api";
+import { getSessionToken } from "@/lib/session";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
+// Passes the viewer's token when they're logged in, so this page works today for logged-in
+// visitors even before the backend's public (anonymous) access change ships — see #9's PR notes.
 async function loadProfile(scholarId: string) {
+  const token = await getSessionToken();
   try {
-    return await getPublicProfile(scholarId);
+    return await getPublicProfile(scholarId, token);
   } catch (err) {
     if (err instanceof ApiError && err.status === 404) {
       notFound();
