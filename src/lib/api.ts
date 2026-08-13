@@ -192,7 +192,7 @@ export interface PublicScholarProfile {
   academicEmailVerified?: boolean;
 }
 
-export function getPublicProfile(token: string, scholarId: string) {
+export function getPublicProfile(scholarId: string, token?: string) {
   return request<PublicScholarProfile>(`/api/scholars/${scholarId}/public-profile`, { token });
 }
 

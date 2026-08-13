@@ -32,7 +32,7 @@ export async function fetchConversationAction(otherScholarId: string): Promise<M
 
 export async function fetchPublicProfileAction(scholarId: string): Promise<PublicScholarProfile> {
   const token = await requireToken();
-  return getPublicProfile(token, scholarId);
+  return getPublicProfile(scholarId, token);
 }
 
 export async function sendMessageAction(receiverId: string, content: string): Promise<Message> {
