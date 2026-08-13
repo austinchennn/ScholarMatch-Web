@@ -16,6 +16,7 @@ export default async function PostingsPage() {
         <h1 className="text-2xl font-semibold">Research postings</h1>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" render={<Link href="/postings/mine">My postings</Link>} />
+          <Button variant="outline" size="sm" render={<Link href="/applications">My applications</Link>} />
           <Button size="sm" render={<Link href="/postings/new">New posting</Link>} />
         </div>
       </div>
