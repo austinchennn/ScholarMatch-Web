@@ -7,7 +7,7 @@ async function loadChatContext(token: string, scholarId: string) {
   try {
     const [me, other] = await Promise.all([
       getProfile(token),
-      getPublicProfile(token, scholarId),
+      getPublicProfile(scholarId, token),
     ]);
     return { me, other };
   } catch (err) {

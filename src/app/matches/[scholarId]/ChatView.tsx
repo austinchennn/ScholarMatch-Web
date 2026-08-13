@@ -52,7 +52,9 @@ export function ChatView({
         <Link href="/matches" className="text-sm text-muted-foreground hover:underline">
           ← Matches
         </Link>
-        <h1 className="text-lg font-semibold">{otherName}</h1>
+        <Link href={`/scholars/${otherScholarId}`} className="text-lg font-semibold hover:underline">
+          {otherName}
+        </Link>
       </div>
 
       <div className="flex flex-1 flex-col gap-2 overflow-y-auto py-4">
