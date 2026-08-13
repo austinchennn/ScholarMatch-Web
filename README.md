@@ -1,5 +1,19 @@
 # ScholarMatch Web
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs&logoColor=white" alt="Next.js"/>
+  <img src="https://img.shields.io/badge/React-19-149ECA?style=flat-square&logo=react&logoColor=white" alt="React"/>
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"/>
+  <img src="https://img.shields.io/badge/shadcn%2Fui-base--ui-000000?style=flat-square" alt="shadcn/ui"/>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/TanStack_Query-5-FF4154?style=flat-square&logo=reactquery&logoColor=white" alt="TanStack Query"/>
+  <img src="https://img.shields.io/badge/API-Spring%20Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white" alt="Spring Boot API"/>
+  <img src="https://img.shields.io/badge/auth-JWT%20%2B%20BFF%20cookie-8A2BE2?style=flat-square" alt="Auth"/>
+</p>
+
 *An "Academic Matchmaking and Collaboration Network" for researchers and students — a
 recommendation feed for finding collaborators, a job board for research postings, and private
 messaging for confirmed matches.*
@@ -9,8 +23,20 @@ messaging for confirmed matches.*
 > original team and repo: [Guancheng-Chen/ScholarMatch](https://github.com/Guancheng-Chen/ScholarMatch).
 > The original desktop client is kept for reference at [`legacy-desktop/`](./legacy-desktop).
 
-This app is a Next.js (App Router, TypeScript, Tailwind, shadcn/ui) client talking to the
-`scholarmatch-server` Spring Boot API — the same backend the desktop client used.
+## Tech stack
+
+| Layer | Choice |
+|---|---|
+| Framework | [Next.js 16](https://nextjs.org) (App Router, Turbopack) |
+| UI | [React 19](https://react.dev), [TypeScript](https://www.typescriptlang.org) |
+| Styling | [Tailwind CSS v4](https://tailwindcss.com) |
+| Components | [shadcn/ui](https://ui.shadcn.com) on [Base UI](https://base-ui.com) primitives |
+| Server state | [TanStack Query](https://tanstack.com/query) |
+| Forms/mutations | React Server Functions (`"use server"` actions), not client-side REST calls |
+| Auth | JWT issued by the backend, held server-side in an `httpOnly` cookie (BFF pattern) — see [Architecture notes](#architecture-notes) |
+| Backend | [Spring Boot](https://spring.io/projects/spring-boot) + Postgres/pgvector (`scholarmatch-server`, separate repo) |
+| Toasts/notifications | [Sonner](https://sonner.emilkowal.ski) |
+| Hosting (planned) | [Vercel](https://vercel.com) for this app, [Railway](https://railway.app) for the API |
 
 ## Setup
 
