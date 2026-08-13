@@ -37,6 +37,7 @@ export default async function DashboardPage() {
       <nav className="flex gap-2">
         <Button size="sm" render={<Link href="/recommend">Recommend</Link>} />
         <Button size="sm" variant="outline" render={<Link href="/matches">Matches</Link>} />
+        <Button size="sm" variant="outline" render={<Link href="/postings">Postings</Link>} />
       </nav>
       <Card className="w-full max-w-lg">
         <CardHeader className="flex flex-row items-start justify-between">
