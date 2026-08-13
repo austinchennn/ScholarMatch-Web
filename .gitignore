@@ -1,162 +1,42 @@
-# ==== Maven ====
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-# Ignore the Maven Wrapper jar but keep the wrapper config
-.mvn/wrapper/maven-wrapper.jar
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# ==== Gradle (Just in case) ====
-.gradle/
-build/
-!gradle/wrapper/gradle-wrapper.jar
-gradle-app.setting
-!gradle-wrapper.properties
-.nb-gradle/
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# ==== Java ====
-*.class
-*.jar
-*.war
-*.ear
-*.nar
-hs_err_pid*
-replay_pid*
+# testing
+/coverage
 
-# ==== IntelliJ IDEA ====
-.idea/
-*.iml
-*.ipr
-*.iws
-out/
-.idea_modules/
+# next.js
+/.next/
+/out/
 
-# ==== Eclipse ====
-.metadata
-bin/
-tmp/
-*.tmp
-*.bak
-*.swp
-*~.nib
-.classpath
-.project
-.settings/
-.loadpath
-.recommenders
-.apt_generated/
-.apt_generated_test/
-.factorypath
-.buildpath
-.target
-.texlipse
-.springBeans
-.sts4-cache/
+# production
+/build
 
-# ==== NetBeans ====
-nbproject/private/
-nbbuild/
-dist/
-nbdist/
-
-# ==== VS Code ====
-.vscode/
-*.code-workspace
-
-# ==== Vim / Emacs ====
-*.swp
-*.swo
-*.swn
-*~
-\#*\#
-.\#*
-
-# ==== Frontend & Scripts (Safeguard) ====
-node_modules/
-npm-debug.log*
-yarn-error.log*
-__pycache__/
-*.pyc
-
-# ==== macOS ====
+# misc
 .DS_Store
-.DS_Store?
-._*
-.AppleDouble
-.LSOverride
-.Spotlight-V100
-.Trashes
-.TemporaryItems
-.fseventsd
-.VolumeIcon.icns
-.com.apple.timemachine.donotpresent
-Icon?
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
-__MACOSX/
-
-# ==== Windows ====
-Thumbs.db
-Thumbs.db:encryptable
-ehthumbs.db
-ehthumbs_vista.db
-Desktop.ini
-$RECYCLE.BIN/
-*.lnk
-*.stackdump
-
-# ==== Linux ====
-.nfs*
-.fuse_hidden*
-.directory
-.Trash-*
-
-# ==== Logs & Runtime Data ====
-logs/
-*.log
-*.pid
-*.seed
-*.pid.lock
-
-# ==== Environment Variables & Secrets ====
-.env
-.env.*
-!.env.example
 *.pem
-*.key
-*.p12
-application-local.yml
-application-local.yaml
-application-local.properties
 
-# ==== Databases ====
-*.db
-*.sqlite
-*.sqlite3
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-# ==== Archives ====
-*.7z
-*.dmg
-*.gz
-*.iso
-*.rar
-*.tar
-*.zip
+# env files (can opt-in for committing if needed)
+.env*
+!.env*.example
 
-# ==== Testing, Coverage & Code Quality ====
-coverage/
-*.exec
-jacoco.exec
-checkstyle-cachefile
+# vercel
+.vercel
 
-# ==== Other Temporary Files ====
-*.orig
-*.rej
-.cache/
+# typescript
+*.tsbuildinfo
+next-env.d.ts
