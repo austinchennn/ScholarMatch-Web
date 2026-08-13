@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ApiError, getProfile, type ScholarProfile } from "@/lib/api";
 import { getSessionToken } from "@/lib/session";
@@ -41,11 +42,14 @@ export default async function DashboardPage() {
             </CardTitle>
             <CardDescription>{profile.email}</CardDescription>
           </div>
-          <form action={logoutAction}>
-            <Button type="submit" variant="outline" size="sm">
-              Log out
-            </Button>
-          </form>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" render={<Link href="/profile/edit">Edit profile</Link>} />
+            <form action={logoutAction}>
+              <Button type="submit" variant="outline" size="sm">
+                Log out
+              </Button>
+            </form>
+          </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           {profile.institution && (
