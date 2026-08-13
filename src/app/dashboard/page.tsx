@@ -36,6 +36,7 @@ export default async function DashboardPage() {
     <div className="flex flex-1 flex-col items-center gap-6 px-6 py-16">
       <nav className="flex gap-2">
         <Button size="sm" render={<Link href="/recommend">Recommend</Link>} />
+        <Button size="sm" variant="outline" render={<Link href="/matches">Matches</Link>} />
       </nav>
       <Card className="w-full max-w-lg">
         <CardHeader className="flex flex-row items-start justify-between">
