@@ -1,1 +1,0 @@
-As a scholar, I want to review a stack of recommended candidate profile cards so that I can discover potential collaborators for my research. 
