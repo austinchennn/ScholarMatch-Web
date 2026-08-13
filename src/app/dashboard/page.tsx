@@ -38,6 +38,7 @@ export default async function DashboardPage() {
         <Button size="sm" render={<Link href="/recommend">Recommend</Link>} />
         <Button size="sm" variant="outline" render={<Link href="/matches">Matches</Link>} />
         <Button size="sm" variant="outline" render={<Link href="/postings">Postings</Link>} />
+        <Button size="sm" variant="outline" render={<Link href="/settings">Settings</Link>} />
       </nav>
       <Card className="w-full max-w-lg">
         <CardHeader className="flex flex-row items-start justify-between">
