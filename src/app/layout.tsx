@@ -14,9 +14,27 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const TITLE = "ScholarMatch — Find your next research collaborator";
+const DESCRIPTION =
+  "ScholarMatch matches researchers and students by shared research interests, with a mutual-match feed, private messaging, and a board for open collaboration opportunities.";
+
 export const metadata: Metadata = {
-  title: "ScholarMatch",
-  description: "Find your next research collaborator.",
+  title: {
+    default: TITLE,
+    template: "%s — ScholarMatch",
+  },
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    siteName: "ScholarMatch",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
