@@ -42,7 +42,9 @@ export async function registerAction(
   }
 
   await setSessionToken(auth.token);
-  redirect("/dashboard");
+  // The ?signup=1 param lets the dashboard fire a one-time "signup_completed" analytics
+  // event client-side (this server action can't call the browser-only analytics module).
+  redirect("/dashboard?signup=1");
 }
 
 export async function loginAction(
