@@ -41,6 +41,7 @@ export default async function DashboardPage() {
         <Button size="sm" variant="outline" render={<Link href="/postings">Postings</Link>} />
         <Button size="sm" variant="outline" render={<Link href="/search">Search</Link>} />
         <NotificationBell />
+        <Button size="sm" variant="outline" render={<Link href="/billing">Billing</Link>} />
         <Button size="sm" variant="outline" render={<Link href="/settings">Settings</Link>} />
       </nav>
       <Card className="w-full max-w-lg">
