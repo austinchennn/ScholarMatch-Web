@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,7 +51,10 @@ export default function Home() {
   return (
     <div className="flex flex-1 flex-col">
       <header className="flex items-center justify-between px-6 py-4 sm:px-12">
-        <span className="text-lg font-semibold">ScholarMatch</span>
+        <span className="flex items-center gap-2 text-lg font-semibold">
+          <Image src="/logo.png" alt="" width={28} height={28} priority />
+          ScholarMatch
+        </span>
         <nav className="flex items-center gap-2">
           <Button variant="ghost" render={<Link href="/login">Log in</Link>} />
           <Button render={<Link href="/register">Sign up</Link>} />
