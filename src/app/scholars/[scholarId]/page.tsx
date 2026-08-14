@@ -4,6 +4,7 @@ import { ApiError, getPublicProfile } from "@/lib/api";
 import { getSessionToken } from "@/lib/session";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScholarAvatar } from "@/components/scholar-avatar";
 
 // Passes the viewer's token when they're logged in, so this page works today for logged-in
 // visitors even before the backend's public (anonymous) access change ships — see #9's PR notes.
@@ -53,12 +54,15 @@ export default async function PublicScholarPage({
   return (
     <div className="mx-auto w-full max-w-2xl px-6 py-16">
       <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">{profile.displayName}</CardTitle>
-          <CardDescription>
-            {profile.institution}
-            {profile.academicLevel ? ` · ${profile.academicLevel}` : ""}
-          </CardDescription>
+        <CardHeader className="flex items-center gap-4">
+          <ScholarAvatar name={profile.displayName} avatarUrl={profile.avatarUrl} size="lg" className="size-16" />
+          <div>
+            <CardTitle className="text-2xl">{profile.displayName}</CardTitle>
+            <CardDescription>
+              {profile.institution}
+              {profile.academicLevel ? ` · ${profile.academicLevel}` : ""}
+            </CardDescription>
+          </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-wrap gap-2">
