@@ -344,3 +344,9 @@ export function changePassword(
 export function deleteAccount(token: string) {
   return request<void>("/api/profile", { method: "DELETE", token });
 }
+
+export function searchScholars(token: string, query: string) {
+  return request<PublicScholarProfile[]>(`/api/search?q=${encodeURIComponent(query)}`, {
+    token,
+  });
+}
