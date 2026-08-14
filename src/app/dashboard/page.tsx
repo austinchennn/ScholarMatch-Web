@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
@@ -40,6 +41,10 @@ export default async function DashboardPage() {
       <Suspense fallback={null}>
         <SignupTracker />
       </Suspense>
+      <Link href="/dashboard" className="flex items-center gap-2 text-lg font-semibold">
+        <Image src="/logo.png" alt="" width={28} height={28} priority />
+        ScholarMatch
+      </Link>
       <nav className="flex gap-2">
         <Button size="sm" render={<Link href="/recommend">Recommend</Link>} />
         <Button size="sm" variant="outline" render={<Link href="/matches">Matches</Link>} />
