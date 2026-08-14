@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { connectAction, dislikeAction, fetchRecommendationsAction } from "@/app/actions/recommend";
+import { track } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +34,9 @@ export function RecommendFeed() {
   const connectMutation = useMutation({
     mutationFn: connectAction,
     onSuccess: (result) => {
+      track("connect_sent");
       if (result.matched) {
+        track("match_made");
         toast.success(
           result.matchedScholar
             ? `You matched with ${result.matchedScholar.firstName}!`
@@ -46,6 +49,7 @@ export function RecommendFeed() {
 
   const dislikeMutation = useMutation({
     mutationFn: dislikeAction,
+    onSuccess: () => track("dislike_sent"),
     onError: () => toast.error("Could not skip that profile."),
   });
 

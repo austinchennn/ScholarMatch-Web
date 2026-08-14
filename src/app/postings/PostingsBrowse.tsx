@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { applyToPostingAction, fetchPostingsAction } from "@/app/actions/postings";
 import type { Posting } from "@/lib/api";
 import { ApiError } from "@/lib/api";
+import { track } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,6 +27,7 @@ function ApplyDialog({ posting }: { posting: Posting }) {
   const applyMutation = useMutation({
     mutationFn: () => applyToPostingAction(posting.postingId, message.trim() || undefined),
     onSuccess: () => {
+      track("posting_application_sent", { postingId: posting.postingId });
       toast.success("Application sent");
       setOpen(false);
       setMessage("");

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { ApiError, getProfile, type ScholarProfile } from "@/lib/api";
 import { getSessionToken } from "@/lib/session";
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { NotificationBell } from "@/app/notifications/NotificationBell";
+import { SignupTracker } from "./SignupTracker";
 
 async function loadProfile(token: string): Promise<ScholarProfile> {
   try {
@@ -35,6 +37,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-1 flex-col items-center gap-6 px-6 py-16">
+      <Suspense fallback={null}>
+        <SignupTracker />
+      </Suspense>
       <nav className="flex gap-2">
         <Button size="sm" render={<Link href="/recommend">Recommend</Link>} />
         <Button size="sm" variant="outline" render={<Link href="/matches">Matches</Link>} />

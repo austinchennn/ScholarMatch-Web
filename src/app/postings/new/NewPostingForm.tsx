@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { createPostingAction } from "@/app/actions/postings";
 import { ApiError } from "@/lib/api";
+import { track } from "@/lib/analytics";
 import {
   COLLABORATION_TYPES,
   RESEARCH_FIELDS,
@@ -41,6 +42,7 @@ export function NewPostingForm() {
         maxApplicants: maxApplicants ? Number(maxApplicants) : undefined,
       }),
     onSuccess: () => {
+      track("posting_created");
       toast.success("Posting created");
       router.push("/postings");
     },
