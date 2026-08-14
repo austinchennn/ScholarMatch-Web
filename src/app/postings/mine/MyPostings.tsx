@@ -4,9 +4,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   acceptApplicationAction,
+  boostPostingAction,
   closePostingAction,
   declineApplicationAction,
   fetchPostingsAction,
+  unboostPostingAction,
 } from "@/app/actions/postings";
 import { ApiError } from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -46,6 +48,21 @@ export function MyPostings() {
     onError: (err) => toast.error(err instanceof ApiError ? err.message : "Could not close posting."),
   });
 
+  const boostMutation = useMutation({
+    mutationFn: (postingId: string) => boostPostingAction(postingId),
+    onSuccess: () => {
+      toast.success("Posting boosted");
+      invalidate();
+    },
+    onError: (err) => toast.error(err instanceof ApiError ? err.message : "Could not boost posting."),
+  });
+
+  const unboostMutation = useMutation({
+    mutationFn: (postingId: string) => unboostPostingAction(postingId),
+    onSuccess: invalidate,
+    onError: (err) => toast.error(err instanceof ApiError ? err.message : "Could not unboost posting."),
+  });
+
   if (postingsQuery.isLoading) {
     return <p className="text-sm text-muted-foreground">Loading your postings…</p>;
   }
@@ -63,24 +80,41 @@ export function MyPostings() {
   return (
     <div className="flex flex-col gap-6">
       {postings.map((posting) => (
-        <Card key={posting.postingId}>
+        <Card key={posting.postingId} className={posting.boosted ? "border-primary/50" : undefined}>
           <CardHeader className="flex flex-row items-start justify-between">
             <div>
-              <CardTitle>{posting.title}</CardTitle>
+              <div className="flex items-center gap-2">
+                <CardTitle>{posting.title}</CardTitle>
+                {posting.boosted && <Badge>Boosted</Badge>}
+              </div>
               <CardDescription>
                 {posting.applicantCount} applicant{posting.applicantCount === 1 ? "" : "s"}
                 {posting.closed ? " · closed" : ""}
               </CardDescription>
             </div>
             {!posting.closed && (
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={closeMutation.isPending}
-                onClick={() => closeMutation.mutate(posting.postingId)}
-              >
-                Close
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={boostMutation.isPending || unboostMutation.isPending}
+                  onClick={() =>
+                    posting.boosted
+                      ? unboostMutation.mutate(posting.postingId)
+                      : boostMutation.mutate(posting.postingId)
+                  }
+                >
+                  {posting.boosted ? "Unboost" : "Boost"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={closeMutation.isPending}
+                  onClick={() => closeMutation.mutate(posting.postingId)}
+                >
+                  Close
+                </Button>
+              </div>
             )}
           </CardHeader>
           <CardContent className="flex flex-col gap-3">

@@ -231,6 +231,7 @@ export interface Posting {
   active: boolean;
   full: boolean;
   closed: boolean;
+  boosted: boolean;
   applications: PostingApplication[] | null;
 }
 
@@ -278,6 +279,20 @@ export function applyToPosting(token: string, postingId: string, message?: strin
 
 export function closePosting(token: string, postingId: string) {
   return request<Posting>(`/api/postings/${postingId}/close`, {
+    method: "POST",
+    token,
+  });
+}
+
+export function boostPosting(token: string, postingId: string) {
+  return request<Posting>(`/api/postings/${postingId}/boost`, {
+    method: "POST",
+    token,
+  });
+}
+
+export function unboostPosting(token: string, postingId: string) {
+  return request<Posting>(`/api/postings/${postingId}/unboost`, {
     method: "POST",
     token,
   });

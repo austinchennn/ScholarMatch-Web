@@ -4,11 +4,13 @@ import { redirect } from "next/navigation";
 import {
   acceptApplication,
   applyToPosting,
+  boostPosting,
   closePosting,
   createPosting,
   declineApplication,
   getMyApplications,
   listPostings,
+  unboostPosting,
   type CreatePostingPayload,
   type Posting,
   type PostingApplication,
@@ -44,6 +46,16 @@ export async function applyToPostingAction(
 export async function closePostingAction(postingId: string): Promise<Posting> {
   const token = await requireToken();
   return closePosting(token, postingId);
+}
+
+export async function boostPostingAction(postingId: string): Promise<Posting> {
+  const token = await requireToken();
+  return boostPosting(token, postingId);
+}
+
+export async function unboostPostingAction(postingId: string): Promise<Posting> {
+  const token = await requireToken();
+  return unboostPosting(token, postingId);
 }
 
 export async function acceptApplicationAction(applicationId: string): Promise<PostingApplication> {
