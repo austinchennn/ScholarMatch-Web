@@ -25,6 +25,27 @@ const FEATURES = [
   },
 ];
 
+const STEPS = [
+  {
+    step: "1",
+    title: "Build your profile",
+    description:
+      "Add your research field, interests, and a short description of what you're working on.",
+  },
+  {
+    step: "2",
+    title: "Get matched",
+    description:
+      "Browse a feed ranked by shared research interests, and connect with the ones worth a conversation.",
+  },
+  {
+    step: "3",
+    title: "Collaborate",
+    description:
+      "Message your matches directly, or post an opening and review who applies.",
+  },
+];
+
 export default function Home() {
   return (
     <div className="flex flex-1 flex-col">
@@ -36,14 +57,15 @@ export default function Home() {
         </nav>
       </header>
 
-      <main className="flex flex-1 flex-col items-center gap-16 px-6 py-16 sm:px-12">
+      <main className="flex flex-1 flex-col items-center gap-24 px-6 py-16 sm:px-12">
         <div className="flex max-w-2xl flex-col items-center gap-6 text-center">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
             Find your next research collaborator.
           </h1>
           <p className="text-lg text-muted-foreground">
-            ScholarMatch pairs researchers and students by shared interests,
-            with a dedicated feed for open collaboration opportunities.
+            An academic matchmaking network for researchers and students — a
+            recommendation feed for finding collaborators, mutual-match
+            connections, and a board for open research opportunities.
           </p>
           <div className="flex gap-3">
             <Button size="lg" render={<Link href="/register">Get started</Link>} />
@@ -65,7 +87,31 @@ export default function Home() {
             </Card>
           ))}
         </div>
+
+        <div className="flex w-full max-w-4xl flex-col gap-10">
+          <h2 className="text-center text-2xl font-semibold">How it works</h2>
+          <div className="grid gap-8 sm:grid-cols-3">
+            {STEPS.map((s) => (
+              <div key={s.step} className="flex flex-col items-center gap-3 text-center">
+                <span className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+                  {s.step}
+                </span>
+                <h3 className="font-medium">{s.title}</h3>
+                <p className="text-sm text-muted-foreground">{s.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex w-full max-w-2xl flex-col items-center gap-4 rounded-xl border bg-muted/30 px-6 py-10 text-center">
+          <h2 className="text-xl font-semibold">Ready to find who to work with next?</h2>
+          <Button size="lg" render={<Link href="/register">Create your profile</Link>} />
+        </div>
       </main>
+
+      <footer className="border-t px-6 py-8 text-center text-sm text-muted-foreground sm:px-12">
+        ScholarMatch — an academic matchmaking and collaboration network.
+      </footer>
     </div>
   );
 }
