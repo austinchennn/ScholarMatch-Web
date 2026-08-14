@@ -76,7 +76,7 @@ Each section below covers method, path, request body, response body, and known g
 ```
 **Response 200:** empty body.
 
-**Behavior:** normalizes the email (trim + lowercase), generates a six-digit code, sends it via Resend, then stores an in-memory challenge (10-minute expiry, 3 attempts, `Purpose.REGISTER`). If Resend delivery fails, the challenge is never stored and the request fails as a `500` (see Error Format). No rate limiting on this endpoint — rate limiting only applies to the authenticated email-change flow below.
+**Behavior:** normalizes the email (trim + lowercase), generates a six-digit code, sends it via Resend, then stores an in-memory challenge (10-minute expiry, 3 attempts, `Purpose.REGISTER`). If Resend delivery fails, the challenge is never stored and the request fails as a `500` (see Error Format). **Updated 2026-08-14 (#16 auth hardening):** now rate-limited too — 3 requests per 15-minute window per target email, sharing the same limiter/window as the email-change flow below (`EmailChangeRateLimiter.checkAndRecordEmail`). `429 {"error": "Too many verification code requests. Try again later."}` on the cap.
 
 ### POST /api/auth/register
 
@@ -129,6 +129,8 @@ or
 ```json
 { "error": "Incorrect password" }
 ```
+
+**Updated 2026-08-14 (#16 auth hardening):** failed attempts are now rate-limited per email — 10 failed logins per 15-minute window (`LoginRateLimiter`). Only failures count toward the cap; a successful login resets it. Over the cap, `429 {"error": "Too many failed login attempts. Try again later."}`.
 
 ---
 
