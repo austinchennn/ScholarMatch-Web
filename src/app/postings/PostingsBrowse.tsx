@@ -93,9 +93,12 @@ export function PostingsBrowse() {
         </Button>
       </div>
       {postings.map((posting) => (
-        <Card key={posting.postingId}>
+        <Card key={posting.postingId} className={posting.boosted ? "border-primary/50" : undefined}>
           <CardHeader>
-            <CardTitle>{posting.title}</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle>{posting.title}</CardTitle>
+              {posting.boosted && <Badge>Boosted</Badge>}
+            </div>
             <CardDescription>
               {posting.posterName}
               {posting.maxApplicants
