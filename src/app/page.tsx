@@ -109,8 +109,16 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="border-t px-6 py-8 text-center text-sm text-muted-foreground sm:px-12">
-        ScholarMatch — an academic matchmaking and collaboration network.
+      <footer className="flex flex-col items-center gap-2 border-t px-6 py-8 text-center text-sm text-muted-foreground sm:px-12">
+        <span>ScholarMatch — an academic matchmaking and collaboration network.</span>
+        <div className="flex gap-4">
+          <Link href="/legal/terms" className="underline">
+            Terms of Service
+          </Link>
+          <Link href="/legal/privacy" className="underline">
+            Privacy Policy
+          </Link>
+        </div>
       </footer>
     </div>
   );

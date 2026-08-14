@@ -18,12 +18,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const initialState: ActionState = {};
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [codeRequested, setCodeRequested] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const [codeState, codeFormAction, codePending] = useActionState(
     requestCodeAction,
@@ -110,6 +112,23 @@ export default function RegisterPage() {
                 <Label htmlFor="code">Verification code</Label>
                 <Input id="code" name="code" required maxLength={6} />
               </div>
+              <div className="flex items-start gap-2">
+                <Checkbox
+                  id="agreeToTerms"
+                  checked={agreedToTerms}
+                  onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
+                />
+                <Label htmlFor="agreeToTerms" className="font-normal text-sm leading-snug">
+                  I agree to the{" "}
+                  <Link href="/legal/terms" target="_blank" className="underline">
+                    Terms of Service
+                  </Link>{" "}
+                  and{" "}
+                  <Link href="/legal/privacy" target="_blank" className="underline">
+                    Privacy Policy
+                  </Link>
+                </Label>
+              </div>
               {registerState.error && (
                 <p className="text-sm text-destructive">
                   {registerState.error}
@@ -117,7 +136,11 @@ export default function RegisterPage() {
               )}
             </CardContent>
             <CardFooter className="flex flex-col gap-3">
-              <Button type="submit" className="w-full" disabled={registerPending}>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={registerPending || !agreedToTerms}
+              >
                 {registerPending ? "Creating account…" : "Create account"}
               </Button>
               <Button
