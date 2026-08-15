@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getSessionToken } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -47,7 +49,12 @@ const STEPS = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const token = await getSessionToken();
+  if (token) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="flex flex-1 flex-col">
       <header className="flex items-center justify-between px-6 py-4 sm:px-12">
