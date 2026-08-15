@@ -26,8 +26,8 @@ export default async function MatchesPage() {
       {matches.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           No matches yet — head to{" "}
-          <Link href="/recommend" className="underline">
-            Recommend
+          <Link href="/dashboard" className="underline">
+            Home
           </Link>{" "}
           to find collaborators.
         </p>

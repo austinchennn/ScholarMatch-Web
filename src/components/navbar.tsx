@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, MessagesSquare, Search, Sparkles, Briefcase } from "lucide-react";
+import { Home, MessagesSquare, Search, Briefcase } from "lucide-react";
 import { logoutAction } from "@/app/actions/auth";
 import { ScholarAvatar } from "@/components/scholar-avatar";
 import { NotificationBell } from "@/app/(app)/notifications/NotificationBell";
@@ -19,7 +19,6 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Home", icon: Home },
-  { href: "/recommend", label: "Recommend", icon: Sparkles },
   { href: "/matches", label: "Matches", icon: MessagesSquare },
   { href: "/postings", label: "Postings", icon: Briefcase },
   { href: "/search", label: "Search", icon: Search },

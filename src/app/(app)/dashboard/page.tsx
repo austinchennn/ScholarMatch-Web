@@ -1,47 +1,14 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { Sparkles, MessagesSquare, Briefcase, Search } from "lucide-react";
 import { ApiError, getProfile, type ScholarProfile } from "@/lib/api";
 import { getSessionToken } from "@/lib/session";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScholarAvatar } from "@/components/scholar-avatar";
+import { RecommendFeed } from "@/app/(app)/recommend/RecommendFeed";
 import { SignupTracker } from "./SignupTracker";
-
-const QUICK_ACTIONS = [
-  {
-    href: "/recommend",
-    icon: Sparkles,
-    title: "Find collaborators",
-    description: "Browse a feed ranked by shared research interests.",
-  },
-  {
-    href: "/matches",
-    icon: MessagesSquare,
-    title: "Your matches",
-    description: "Message the scholars you've mutually connected with.",
-  },
-  {
-    href: "/postings",
-    icon: Briefcase,
-    title: "Research postings",
-    description: "Browse open opportunities or post one of your own.",
-  },
-  {
-    href: "/search",
-    icon: Search,
-    title: "Search",
-    description: "Look up scholars by name, field, or interest.",
-  },
-] as const;
 
 async function loadProfile(token: string): Promise<ScholarProfile> {
   try {
@@ -99,13 +66,16 @@ export default async function DashboardPage() {
         </CardContent>
       </Card>
 
-      <div className="flex flex-col gap-6">
-        {!profileComplete && (
-          <Card className="border-primary/40 bg-primary/5">
+      <div className="flex flex-col items-center gap-6">
+        {profileComplete ? (
+          <RecommendFeed />
+        ) : (
+          <Card className="w-full max-w-md border-primary/40 bg-primary/5">
             <CardHeader>
               <CardTitle className="text-base">Finish setting up your profile</CardTitle>
               <CardDescription>
-                Add a research description so we can start ranking recommendations for you.
+                Recommendations are ranked from your research description — add one to start
+                seeing collaborators here.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -113,25 +83,6 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
         )}
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          {QUICK_ACTIONS.map((action) => {
-            const Icon = action.icon;
-            return (
-              <Link key={action.href} href={action.href}>
-                <Card className="h-full transition-shadow hover:shadow-md">
-                  <CardHeader>
-                    <div className="mb-1 flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <Icon className="size-5" />
-                    </div>
-                    <CardTitle className="text-base">{action.title}</CardTitle>
-                    <CardDescription>{action.description}</CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
-            );
-          })}
-        </div>
       </div>
     </div>
   );
