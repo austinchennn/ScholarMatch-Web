@@ -67,15 +67,19 @@ export function RecommendFeed() {
   }
 
   if (recommendQuery.isError) {
-    return <p className="text-sm text-destructive">Could not load recommendations.</p>;
+    return (
+      <p className="mx-auto text-sm text-destructive">Could not load recommendations.</p>
+    );
   }
 
   if (queue.length === 0) {
     if (recommendQuery.isFetching) {
-      return <p className="text-sm text-muted-foreground">Loading recommendations…</p>;
+      return (
+        <p className="mx-auto text-sm text-muted-foreground">Loading recommendations…</p>
+      );
     }
     return (
-      <div className="flex flex-col items-center gap-4">
+      <div className="mx-auto flex flex-col items-center gap-4 py-6">
         <p className="text-sm text-muted-foreground">
           No more recommendations right now — check back later.
         </p>
@@ -93,7 +97,7 @@ export function RecommendFeed() {
 
   return (
     <ScholarCard
-      className="w-full max-w-md"
+      className="mx-auto w-full max-w-md"
       name={`${candidate.firstName} ${candidate.lastName}`}
       avatarUrl={candidate.avatarUrl}
       institution={candidate.institution}
@@ -106,7 +110,11 @@ export function RecommendFeed() {
           <Button variant="outline" onClick={() => handleDislike(candidate.scholarId)}>
             Dislike
           </Button>
-          <Button variant="ghost" onClick={() => handleSkip(candidate.scholarId)}>
+          <Button
+            variant="outline"
+            className="text-muted-foreground"
+            onClick={() => handleSkip(candidate.scholarId)}
+          >
             Skip
           </Button>
           <Button onClick={() => handleConnect(candidate.scholarId)}>Connect</Button>

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { ApiError, getProfile, type ScholarProfile } from "@/lib/api";
 import { getSessionToken } from "@/lib/session";
+import { formatEnumLabel } from "@/lib/enums";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -39,24 +40,28 @@ export default async function DashboardPage() {
 
       <Card className="h-fit gap-4 overflow-hidden py-0">
         <div className="h-14 bg-gradient-to-r from-primary/70 to-primary" />
-        <CardContent className="-mt-8 flex flex-col items-center gap-2 pb-6 text-center">
+        <CardContent className="-mt-8 flex w-full min-w-0 flex-col items-center gap-2 pb-6 text-center">
           <ScholarAvatar
             name={fullName}
             avatarUrl={profile.avatarUrl}
             size="lg"
             className="size-16 ring-4 ring-card"
           />
-          <div>
-            <p className="font-semibold">{fullName}</p>
-            <p className="text-sm text-muted-foreground">{profile.email}</p>
+          <div className="w-full min-w-0">
+            <p className="truncate text-[15px] font-semibold">{fullName}</p>
+            <p className="truncate text-[13px] text-muted-foreground">{profile.email}</p>
           </div>
           {profile.institution && (
-            <p className="text-sm text-muted-foreground">
+            <p className="w-full truncate text-[13px] text-muted-foreground">
               {profile.institution}
-              {profile.academicLevel ? ` · ${profile.academicLevel}` : ""}
+              {profile.academicLevel ? ` · ${formatEnumLabel(profile.academicLevel)}` : ""}
             </p>
           )}
-          {profile.researchField && <Badge variant="secondary">{profile.researchField}</Badge>}
+          {profile.researchField && (
+            <Badge variant="secondary" className="max-w-full truncate font-normal">
+              {formatEnumLabel(profile.researchField)}
+            </Badge>
+          )}
           <Button
             variant="outline"
             size="sm"
@@ -66,11 +71,11 @@ export default async function DashboardPage() {
         </CardContent>
       </Card>
 
-      <div className="flex flex-col items-center gap-6">
+      <div className="flex flex-col gap-6">
         {profileComplete ? (
           <RecommendFeed />
         ) : (
-          <Card className="w-full max-w-md border-primary/40 bg-primary/5">
+          <Card className="mx-auto w-full max-w-md border-primary/40 bg-primary/5">
             <CardHeader>
               <CardTitle className="text-base">Finish setting up your profile</CardTitle>
               <CardDescription>
