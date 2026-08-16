@@ -8,9 +8,21 @@ import { fetchConversationAction, sendMessageAction } from "@/app/actions/messag
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScholarAvatar } from "@/components/scholar-avatar";
-import { cn } from "@/lib/utils";
+import { MessageBubble } from "./MessageBubble";
+import type { Message } from "@/lib/api";
 
 const POLL_INTERVAL_MS = 5000;
+
+function dedupeAndSortMessages(messages: Message[]): Message[] {
+  const seen = new Set<string>();
+  return messages
+    .filter((message) => {
+      if (seen.has(message.messageId)) return false;
+      seen.add(message.messageId);
+      return true;
+    })
+    .sort((a, b) => a.sentAt.localeCompare(b.sentAt));
+}
 
 export function ChatView({
   currentScholarId,
@@ -47,53 +59,37 @@ export function ChatView({
     sendMutation.mutate(content);
   }
 
-  const messages = conversationQuery.data ?? [];
+  const messages = dedupeAndSortMessages(conversationQuery.data ?? []);
 
   return (
-    <div className="flex flex-1 flex-col gap-4">
-      <div className="flex items-center gap-2 border-b pb-4">
-        <Link href="/matches" className="text-sm text-muted-foreground hover:underline">
-          ← Matches
-        </Link>
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex items-center gap-2 border-b px-6 py-4">
         <Link
           href={`/scholars/${otherScholarId}`}
-          className="flex items-center gap-2 text-lg font-semibold hover:underline"
+          className="flex items-center gap-2 text-base font-semibold hover:underline"
         >
           <ScholarAvatar name={otherName} avatarUrl={otherAvatarUrl} size="sm" />
           {otherName}
         </Link>
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 overflow-y-auto py-4">
+      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-6 py-4">
         {conversationQuery.isLoading ? (
           <p className="text-sm text-muted-foreground">Loading conversation…</p>
         ) : messages.length === 0 ? (
           <p className="text-sm text-muted-foreground">Say hello — you two matched!</p>
         ) : (
-          messages.map((message) => {
-            const isMine = message.senderId === currentScholarId;
-            return (
-              <div
-                key={message.messageId}
-                className={cn("flex", isMine ? "justify-end" : "justify-start")}
-              >
-                <div
-                  className={cn(
-                    "max-w-[75%] rounded-lg px-3 py-2 text-sm",
-                    isMine
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-foreground"
-                  )}
-                >
-                  {message.content}
-                </div>
-              </div>
-            );
-          })
+          messages.map((message) => (
+            <MessageBubble
+              key={message.messageId}
+              content={message.content}
+              isMine={message.senderId === currentScholarId}
+            />
+          ))
         )}
       </div>
 
-      <div className="flex gap-2 border-t pt-4">
+      <div className="flex gap-2 border-t px-6 py-4">
         <Input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
