@@ -9,6 +9,7 @@ import { logoutAction } from "@/app/actions/auth";
 import { ScholarAvatar } from "@/components/scholar-avatar";
 import { NotificationBell } from "@/app/(app)/notifications/NotificationBell";
 import { Input } from "@/components/ui/input";
+import { SettingsDialog } from "@/components/settings-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,6 +59,7 @@ export function Navbar({
   avatarUrl?: string | null;
 }) {
   const pathname = usePathname();
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 border-b bg-card/95 backdrop-blur supports-backdrop-filter:bg-card/80">
@@ -108,7 +110,7 @@ export function Navbar({
               <DropdownMenuItem render={<Link href="/applications">My applications</Link>} />
               <DropdownMenuItem render={<Link href="/postings/mine">My postings</Link>} />
               <DropdownMenuItem render={<Link href="/billing">Billing</Link>} />
-              <DropdownMenuItem render={<Link href="/settings">Settings</Link>} />
+              <DropdownMenuItem onClick={() => setSettingsOpen(true)}>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive" onClick={() => logoutAction()}>
                 Log out
@@ -117,6 +119,8 @@ export function Navbar({
           </DropdownMenu>
         </div>
       </div>
+
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
     </header>
   );
 }
