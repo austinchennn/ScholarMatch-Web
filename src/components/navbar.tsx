@@ -10,6 +10,7 @@ import { NotificationBell } from "@/app/(app)/notifications/NotificationBell";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -72,7 +73,9 @@ export function Navbar({
               <ScholarAvatar name={name} avatarUrl={avatarUrl} />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>{name}</DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>{name}</DropdownMenuLabel>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem render={<Link href="/profile/edit">Edit profile</Link>} />
               <DropdownMenuItem render={<Link href="/applications">My applications</Link>} />
