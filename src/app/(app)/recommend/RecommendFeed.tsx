@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { connectAction, dislikeAction, fetchRecommendationsAction } from "@/app/actions/recommend";
 import { track } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
-import { ScholarCard } from "@/components/scholar-card";
+import { RecommendCard } from "@/components/recommend-card";
 
 export function RecommendFeed() {
   const queryClient = useQueryClient();
@@ -96,15 +96,24 @@ export function RecommendFeed() {
   const candidate = queue[0];
 
   return (
-    <ScholarCard
-      className="mx-auto w-full max-w-md"
+    <RecommendCard
+      className="mx-auto w-full max-w-4xl @container"
       name={`${candidate.firstName} ${candidate.lastName}`}
       avatarUrl={candidate.avatarUrl}
+      academicEmailVerified={candidate.academicEmailVerified}
       institution={candidate.institution}
       academicLevel={candidate.academicLevel}
       researchField={candidate.researchField}
+      lookingFor={candidate.lookingFor}
+      fundingStatus={candidate.fundingStatus}
+      weeklyAvailabilityHours={candidate.weeklyAvailabilityHours}
+      hIndex={candidate.hIndex}
+      totalCitations={candidate.totalCitations}
+      collaborationDescription={candidate.collaborationDescription}
       researchDescription={candidate.researchDescription}
       researchInterests={candidate.researchInterests}
+      educations={candidate.educations}
+      papers={candidate.papers}
       actions={
         <div className="mt-2 flex justify-between gap-2">
           <Button variant="outline" onClick={() => handleDislike(candidate.scholarId)}>
