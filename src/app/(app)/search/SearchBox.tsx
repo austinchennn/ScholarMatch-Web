@@ -8,9 +8,9 @@ import { ScholarCard } from "@/components/scholar-card";
 
 const DEBOUNCE_MS = 350;
 
-export function SearchBox() {
-  const [input, setInput] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
+export function SearchBox({ initialQuery = "" }: { initialQuery?: string }) {
+  const [input, setInput] = useState(initialQuery);
+  const [debouncedQuery, setDebouncedQuery] = useState(initialQuery);
 
   useEffect(() => {
     const handle = setTimeout(() => setDebouncedQuery(input.trim()), DEBOUNCE_MS);
