@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Home, MessagesSquare, Search, Briefcase } from "lucide-react";
+import { Home, MessagesSquare, Search, Briefcase, ClipboardList } from "lucide-react";
 import { logoutAction } from "@/app/actions/auth";
 import { ScholarAvatar } from "@/components/scholar-avatar";
 import { NotificationBell } from "@/app/(app)/notifications/NotificationBell";
@@ -22,9 +22,15 @@ import {
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "Home", icon: Home },
-  { href: "/matches", label: "Matches", icon: MessagesSquare },
-  { href: "/postings", label: "Postings", icon: Briefcase },
+  { href: "/dashboard", label: "Home", icon: Home, isActive: (p: string) => p === "/dashboard" },
+  { href: "/matches", label: "Matches", icon: MessagesSquare, isActive: (p: string) => p.startsWith("/matches") },
+  { href: "/postings", label: "Opportunities", icon: Briefcase, isActive: (p: string) => p === "/postings" },
+  {
+    href: "/postings/mine",
+    label: "Postings",
+    icon: ClipboardList,
+    isActive: (p: string) => p.startsWith("/postings/mine") || p.startsWith("/postings/new"),
+  },
 ] as const;
 
 function NavbarSearch() {
@@ -72,10 +78,7 @@ export function Navbar({
 
         <nav className="flex flex-1 items-center justify-center gap-1">
           {NAV_ITEMS.map((item) => {
-            const isActive =
-              item.href === "/dashboard"
-                ? pathname === "/dashboard"
-                : pathname.startsWith(item.href);
+            const isActive = item.isActive(pathname);
             const Icon = item.icon;
             return (
               <Link
@@ -108,7 +111,6 @@ export function Navbar({
               <DropdownMenuSeparator />
               <DropdownMenuItem render={<Link href="/profile/edit">Edit profile</Link>} />
               <DropdownMenuItem render={<Link href="/applications">My applications</Link>} />
-              <DropdownMenuItem render={<Link href="/postings/mine">My postings</Link>} />
               <DropdownMenuItem render={<Link href="/billing">Billing</Link>} />
               <DropdownMenuItem onClick={() => setSettingsOpen(true)}>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />

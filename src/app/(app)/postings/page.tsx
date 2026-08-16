@@ -13,9 +13,8 @@ export default async function PostingsPage() {
   return (
     <div className="mx-auto w-full max-w-2xl">
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Research postings</h1>
+        <h1 className="text-2xl font-semibold">Opportunities</h1>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" render={<Link href="/postings/mine">My postings</Link>} />
           <Button variant="outline" size="sm" render={<Link href="/applications">My applications</Link>} />
           <Button size="sm" render={<Link href="/postings/new">New posting</Link>} />
         </div>
