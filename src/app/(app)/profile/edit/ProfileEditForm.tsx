@@ -8,52 +8,18 @@ import type { EducationEntry, Paper, ScholarProfile } from "@/lib/api";
 import {
   ACADEMIC_LEVELS,
   COLLABORATION_TYPES,
-  DEGREE_TYPES,
   FUNDING_STATUSES,
   RESEARCH_FIELDS,
-  formatEnumLabel,
 } from "@/lib/enums";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-const MAX_PAPERS = 5;
-
-function EnumSelect({
-  value,
-  onChange,
-  options,
-  placeholder,
-}: {
-  value: string;
-  onChange: (value: string) => void;
-  options: readonly string[];
-  placeholder: string;
-}) {
-  return (
-    <Select value={value} onValueChange={(v) => onChange(v ?? "")}>
-      <SelectTrigger className="w-full">
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {options.map((option) => (
-          <SelectItem key={option} value={option}>
-            {formatEnumLabel(option)}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  );
-}
+import { EnumSelect } from "./EnumSelect";
+import { AvatarUploadField } from "./AvatarUploadField";
+import { EducationsSection } from "./EducationsSection";
+import { PapersSection } from "./PapersSection";
 
 export function ProfileEditForm({ profile }: { profile: ScholarProfile }) {
   const router = useRouter();
@@ -90,26 +56,9 @@ export function ProfileEditForm({ profile }: { profile: ScholarProfile }) {
     profile.avatarUrl ?? null
   );
 
-  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      setAvatarBase64(result);
-      setAvatarPreview(result);
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function updateEducation(index: number, patch: Partial<EducationEntry>) {
-    setEducations((prev) =>
-      prev.map((edu, i) => (i === index ? { ...edu, ...patch } : edu))
-    );
-  }
-
-  function updatePaper(index: number, patch: Partial<Paper>) {
-    setPapers((prev) => prev.map((p, i) => (i === index ? { ...p, ...patch } : p)));
+  function handleAvatarSelected(dataUrl: string) {
+    setAvatarBase64(dataUrl);
+    setAvatarPreview(dataUrl);
   }
 
   function handleSave() {
@@ -149,30 +98,7 @@ export function ProfileEditForm({ profile }: { profile: ScholarProfile }) {
 
   return (
     <div className="flex flex-col gap-8">
-      <section className="flex items-center gap-4">
-        {avatarPreview ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={avatarPreview}
-            alt="Avatar preview"
-            className="size-16 rounded-full object-cover"
-          />
-        ) : (
-          <div className="size-16 rounded-full bg-muted" />
-        )}
-        <div>
-          <Label htmlFor="avatar" className="mb-2 block">
-            Avatar
-          </Label>
-          <input
-            id="avatar"
-            type="file"
-            accept="image/*"
-            onChange={handleAvatarChange}
-            className="text-sm"
-          />
-        </div>
-      </section>
+      <AvatarUploadField preview={avatarPreview} onFileSelected={handleAvatarSelected} />
 
       <Separator />
 
@@ -295,101 +221,11 @@ export function ProfileEditForm({ profile }: { profile: ScholarProfile }) {
 
       <Separator />
 
-      <section className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold">Education</h2>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              setEducations((prev) => [...prev, { school: "", degree: "", field: "" }])
-            }
-          >
-            Add education
-          </Button>
-        </div>
-        {educations.map((edu, i) => (
-          <div key={i} className="grid gap-3 rounded-lg border p-4 sm:grid-cols-3">
-            <div className="flex flex-col gap-2">
-              <Label>School</Label>
-              <Input
-                value={edu.school}
-                onChange={(e) => updateEducation(i, { school: e.target.value })}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Degree</Label>
-              <EnumSelect
-                value={edu.degree}
-                onChange={(v) => updateEducation(i, { degree: v })}
-                options={DEGREE_TYPES}
-                placeholder="Select degree"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Field</Label>
-              <Input
-                value={edu.field}
-                onChange={(e) => updateEducation(i, { field: e.target.value })}
-              />
-            </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="sm:col-span-3 w-fit"
-              onClick={() => setEducations((prev) => prev.filter((_, idx) => idx !== i))}
-            >
-              Remove
-            </Button>
-          </div>
-        ))}
-      </section>
+      <EducationsSection educations={educations} onChange={setEducations} />
 
       <Separator />
 
-      <section className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold">Papers ({papers.length}/{MAX_PAPERS})</h2>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={papers.length >= MAX_PAPERS}
-            onClick={() => setPapers((prev) => [...prev, { title: "", doi: "" }])}
-          >
-            Add paper
-          </Button>
-        </div>
-        {papers.map((paper, i) => (
-          <div key={i} className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2">
-            <div className="flex flex-col gap-2">
-              <Label>Title</Label>
-              <Input
-                value={paper.title}
-                onChange={(e) => updatePaper(i, { title: e.target.value })}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>DOI</Label>
-              <Input
-                value={paper.doi}
-                onChange={(e) => updatePaper(i, { doi: e.target.value })}
-              />
-            </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="sm:col-span-2 w-fit"
-              onClick={() => setPapers((prev) => prev.filter((_, idx) => idx !== i))}
-            >
-              Remove
-            </Button>
-          </div>
-        ))}
-      </section>
+      <PapersSection papers={papers} onChange={setPapers} />
 
       <div className="flex justify-end gap-3">
         <Button variant="outline" onClick={() => router.push("/dashboard")}>
