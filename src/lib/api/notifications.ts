@@ -1,4 +1,4 @@
-import { request } from "./client";
+import { fetchApiClient, type ApiClient } from "./client";
 
 export interface Notification {
   notificationId: string;
@@ -9,12 +9,16 @@ export interface Notification {
   createdAt: string;
 }
 
-export function getNotifications(token: string) {
-  return request<Notification[]>("/api/notifications", { token });
+export function getNotifications(token: string, client: ApiClient = fetchApiClient) {
+  return client.request<Notification[]>("/api/notifications", { token });
 }
 
-export function markNotificationRead(token: string, notificationId: string) {
-  return request<Notification>(`/api/notifications/${notificationId}/read`, {
+export function markNotificationRead(
+  token: string,
+  notificationId: string,
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<Notification>(`/api/notifications/${notificationId}/read`, {
     method: "POST",
     token,
   });

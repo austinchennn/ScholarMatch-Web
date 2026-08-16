@@ -1,4 +1,4 @@
-import { request } from "./client";
+import { fetchApiClient, type ApiClient } from "./client";
 
 export interface Posting {
   postingId: string;
@@ -41,61 +41,82 @@ export interface CreatePostingPayload {
   maxApplicants?: number;
 }
 
-export function createPosting(token: string, payload: CreatePostingPayload) {
-  return request<Posting>("/api/postings", {
+export function createPosting(
+  token: string,
+  payload: CreatePostingPayload,
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<Posting>("/api/postings", {
     method: "POST",
     token,
     body: JSON.stringify(payload),
   });
 }
 
-export function listPostings(token: string, scope: "ALL_ACTIVE" | "MINE") {
-  return request<Posting[]>(`/api/postings?scope=${scope}`, { token });
+export function listPostings(
+  token: string,
+  scope: "ALL_ACTIVE" | "MINE",
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<Posting[]>(`/api/postings?scope=${scope}`, { token });
 }
 
-export function applyToPosting(token: string, postingId: string, message?: string) {
-  return request<PostingApplication>(`/api/postings/${postingId}/apply`, {
+export function applyToPosting(
+  token: string,
+  postingId: string,
+  message?: string,
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<PostingApplication>(`/api/postings/${postingId}/apply`, {
     method: "POST",
     token,
     body: JSON.stringify(message ? { message } : {}),
   });
 }
 
-export function closePosting(token: string, postingId: string) {
-  return request<Posting>(`/api/postings/${postingId}/close`, {
+export function closePosting(token: string, postingId: string, client: ApiClient = fetchApiClient) {
+  return client.request<Posting>(`/api/postings/${postingId}/close`, {
     method: "POST",
     token,
   });
 }
 
-export function boostPosting(token: string, postingId: string) {
-  return request<Posting>(`/api/postings/${postingId}/boost`, {
+export function boostPosting(token: string, postingId: string, client: ApiClient = fetchApiClient) {
+  return client.request<Posting>(`/api/postings/${postingId}/boost`, {
     method: "POST",
     token,
   });
 }
 
-export function unboostPosting(token: string, postingId: string) {
-  return request<Posting>(`/api/postings/${postingId}/unboost`, {
+export function unboostPosting(token: string, postingId: string, client: ApiClient = fetchApiClient) {
+  return client.request<Posting>(`/api/postings/${postingId}/unboost`, {
     method: "POST",
     token,
   });
 }
 
-export function acceptApplication(token: string, applicationId: string) {
-  return request<PostingApplication>(`/api/postings/applications/${applicationId}/accept`, {
+export function acceptApplication(
+  token: string,
+  applicationId: string,
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<PostingApplication>(`/api/postings/applications/${applicationId}/accept`, {
     method: "POST",
     token,
   });
 }
 
-export function declineApplication(token: string, applicationId: string) {
-  return request<PostingApplication>(`/api/postings/applications/${applicationId}/decline`, {
+export function declineApplication(
+  token: string,
+  applicationId: string,
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<PostingApplication>(`/api/postings/applications/${applicationId}/decline`, {
     method: "POST",
     token,
   });
 }
 
-export function getMyApplications(token: string) {
-  return request<PostingApplication[]>("/api/postings/applications/mine", { token });
+export function getMyApplications(token: string, client: ApiClient = fetchApiClient) {
+  return client.request<PostingApplication[]>("/api/postings/applications/mine", { token });
 }

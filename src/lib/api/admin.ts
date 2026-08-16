@@ -1,4 +1,4 @@
-import { request } from "./client";
+import { fetchApiClient, type ApiClient } from "./client";
 
 export interface AdminScholar {
   scholarId: string;
@@ -11,19 +11,27 @@ export interface AdminScholar {
   disabled: boolean;
 }
 
-export function listAdminScholars(token: string) {
-  return request<AdminScholar[]>("/api/admin/scholars", { token });
+export function listAdminScholars(token: string, client: ApiClient = fetchApiClient) {
+  return client.request<AdminScholar[]>("/api/admin/scholars", { token });
 }
 
-export function disableScholar(token: string, scholarId: string) {
-  return request<AdminScholar>(`/api/admin/scholars/${scholarId}/disable`, {
+export function disableScholar(
+  token: string,
+  scholarId: string,
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<AdminScholar>(`/api/admin/scholars/${scholarId}/disable`, {
     method: "POST",
     token,
   });
 }
 
-export function enableScholar(token: string, scholarId: string) {
-  return request<AdminScholar>(`/api/admin/scholars/${scholarId}/enable`, {
+export function enableScholar(
+  token: string,
+  scholarId: string,
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<AdminScholar>(`/api/admin/scholars/${scholarId}/enable`, {
     method: "POST",
     token,
   });
