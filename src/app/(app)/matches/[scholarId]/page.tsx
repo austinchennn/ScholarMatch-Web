@@ -32,13 +32,11 @@ export default async function ChatPage({
   const { me, other } = await loadChatContext(token, scholarId);
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col">
-      <ChatView
-        currentScholarId={me.scholarId}
-        otherScholarId={scholarId}
-        otherName={other.displayName}
-        otherAvatarUrl={other.avatarUrl}
-      />
-    </div>
+    <ChatView
+      currentScholarId={me.scholarId}
+      otherScholarId={scholarId}
+      otherName={other.displayName}
+      otherAvatarUrl={other.avatarUrl}
+    />
   );
 }
