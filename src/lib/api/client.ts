@@ -9,36 +9,51 @@ export class ApiError extends Error {
   }
 }
 
-export async function request<T>(
-  path: string,
-  options: RequestInit & { token?: string } = {}
-): Promise<T> {
-  const { token, headers, ...rest } = options;
+export type RequestOptions = RequestInit & { token?: string };
 
-  const res = await fetch(`${API_BASE_URL}${path}`, {
-    ...rest,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...headers,
-    },
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    let message = res.statusText;
-    try {
-      const body = await res.json();
-      message = body.error ?? message;
-    } catch {
-      // response had no JSON body
-    }
-    throw new ApiError(res.status, message);
-  }
-
-  if (res.status === 204 || res.headers.get("content-length") === "0") {
-    return undefined as T;
-  }
-
-  return (await res.json()) as T;
+// The abstraction every domain module (auth.ts, profile.ts, ...) depends on. They call
+// through this interface, never through `FetchApiClient` or `fetch` directly — the ScholarMatch
+// backend's HTTP transport is a swappable detail, not something business-facing code should
+// be coupled to.
+export interface ApiClient {
+  request<T>(path: string, options?: RequestOptions): Promise<T>;
 }
+
+class FetchApiClient implements ApiClient {
+  async request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+    const { token, headers, ...rest } = options;
+
+    const res = await fetch(`${API_BASE_URL}${path}`, {
+      ...rest,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...headers,
+      },
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      let message = res.statusText;
+      try {
+        const body = await res.json();
+        message = body.error ?? message;
+      } catch {
+        // response had no JSON body
+      }
+      throw new ApiError(res.status, message);
+    }
+
+    if (res.status === 204 || res.headers.get("content-length") === "0") {
+      return undefined as T;
+    }
+
+    return (await res.json()) as T;
+  }
+}
+
+// The composition root: the one place a concrete ApiClient gets constructed. Every domain
+// function takes an optional `client: ApiClient` parameter defaulting to this instance, so
+// production call sites don't change at all, but any caller (most importantly a test) can
+// substitute a fake ApiClient without touching the domain module.
+export const fetchApiClient: ApiClient = new FetchApiClient();

@@ -1,4 +1,4 @@
-import { request } from "./client";
+import { fetchApiClient, type ApiClient } from "./client";
 
 export interface AuthResponse {
   token: string;
@@ -7,8 +7,8 @@ export interface AuthResponse {
   avatarUrl: string | null;
 }
 
-export function requestVerificationCode(email: string) {
-  return request<void>("/api/auth/request-verification-code", {
+export function requestVerificationCode(email: string, client: ApiClient = fetchApiClient) {
+  return client.request<void>("/api/auth/request-verification-code", {
     method: "POST",
     body: JSON.stringify({ email }),
   });
@@ -22,15 +22,15 @@ export interface RegisterPayload {
   code: string;
 }
 
-export function register(payload: RegisterPayload) {
-  return request<AuthResponse>("/api/auth/register", {
+export function register(payload: RegisterPayload, client: ApiClient = fetchApiClient) {
+  return client.request<AuthResponse>("/api/auth/register", {
     method: "POST",
     body: JSON.stringify(payload),
   });
 }
 
-export function login(email: string, password: string) {
-  return request<AuthResponse>("/api/auth/login", {
+export function login(email: string, password: string, client: ApiClient = fetchApiClient) {
+  return client.request<AuthResponse>("/api/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
   });

@@ -1,4 +1,4 @@
-import { request } from "./client";
+import { fetchApiClient, type ApiClient } from "./client";
 
 export interface Message {
   messageId: string;
@@ -8,14 +8,23 @@ export interface Message {
   sentAt: string;
 }
 
-export function sendMessage(token: string, receiverId: string, content: string) {
-  return request<Message>("/api/messages", {
+export function sendMessage(
+  token: string,
+  receiverId: string,
+  content: string,
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<Message>("/api/messages", {
     method: "POST",
     token,
     body: JSON.stringify({ receiverId, content }),
   });
 }
 
-export function getConversation(token: string, otherScholarId: string) {
-  return request<Message[]>(`/api/messages/${otherScholarId}`, { token });
+export function getConversation(
+  token: string,
+  otherScholarId: string,
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<Message[]>(`/api/messages/${otherScholarId}`, { token });
 }

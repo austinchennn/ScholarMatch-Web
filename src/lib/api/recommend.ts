@@ -1,8 +1,8 @@
-import { request } from "./client";
+import { fetchApiClient, type ApiClient } from "./client";
 import type { ScholarProfile } from "./profile";
 
-export function getRecommendations(token: string) {
-  return request<ScholarProfile[]>("/api/recommend", { token });
+export function getRecommendations(token: string, client: ApiClient = fetchApiClient) {
+  return client.request<ScholarProfile[]>("/api/recommend", { token });
 }
 
 export interface ConnectResult {
@@ -10,16 +10,24 @@ export interface ConnectResult {
   matchedScholar: ScholarProfile | null;
 }
 
-export function connect(token: string, connectedScholarId: string) {
-  return request<ConnectResult>("/api/connect", {
+export function connect(
+  token: string,
+  connectedScholarId: string,
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<ConnectResult>("/api/connect", {
     method: "POST",
     token,
     body: JSON.stringify({ connectedScholarId }),
   });
 }
 
-export function dislike(token: string, dislikedScholarId: string) {
-  return request<void>("/api/dislike", {
+export function dislike(
+  token: string,
+  dislikedScholarId: string,
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<void>("/api/dislike", {
     method: "POST",
     token,
     body: JSON.stringify({ dislikedScholarId }),

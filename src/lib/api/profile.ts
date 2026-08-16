@@ -1,4 +1,4 @@
-import { request } from "./client";
+import { fetchApiClient, type ApiClient } from "./client";
 
 export interface Paper {
   title: string;
@@ -52,12 +52,16 @@ export interface UpdateProfilePayload {
   avatarBase64?: string;
 }
 
-export function getProfile(token: string) {
-  return request<ScholarProfile>("/api/profile", { token });
+export function getProfile(token: string, client: ApiClient = fetchApiClient) {
+  return client.request<ScholarProfile>("/api/profile", { token });
 }
 
-export function updateProfile(token: string, payload: UpdateProfilePayload) {
-  return request<ScholarProfile>("/api/profile", {
+export function updateProfile(
+  token: string,
+  payload: UpdateProfilePayload,
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<ScholarProfile>("/api/profile", {
     method: "PUT",
     token,
     body: JSON.stringify(payload),
@@ -84,6 +88,12 @@ export interface PublicScholarProfile {
   academicEmailVerified?: boolean;
 }
 
-export function getPublicProfile(scholarId: string, token?: string) {
-  return request<PublicScholarProfile>(`/api/scholars/${scholarId}/public-profile`, { token });
+export function getPublicProfile(
+  scholarId: string,
+  token?: string,
+  client: ApiClient = fetchApiClient
+) {
+  return client.request<PublicScholarProfile>(`/api/scholars/${scholarId}/public-profile`, {
+    token,
+  });
 }
