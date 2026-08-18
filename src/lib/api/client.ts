@@ -9,6 +9,14 @@ export class ApiError extends Error {
   }
 }
 
+// The `err instanceof ApiError ? err.message : fallback` ternary was copy-pasted at 15 call
+// sites across 8 files (mutation onError handlers, server action catch blocks) — the backend's
+// error message is safe to show the user, anything else (a network failure, a thrown non-Error)
+// isn't, so fall back to a generic message instead.
+export function apiErrorMessage(err: unknown, fallback: string): string {
+  return err instanceof ApiError ? err.message : fallback;
+}
+
 export type RequestOptions = RequestInit & { token?: string };
 
 // The abstraction every domain module (auth.ts, profile.ts, ...) depends on. They call

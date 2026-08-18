@@ -10,7 +10,7 @@ import {
   deleteAccountAction,
   requestEmailChangeCodeAction,
 } from "@/app/actions/account";
-import { ApiError } from "@/lib/api";
+import { apiErrorMessage as errorMessage } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,10 +25,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
-function errorMessage(err: unknown, fallback: string) {
-  return err instanceof ApiError ? err.message : fallback;
-}
 
 function ChangeEmailSection() {
   const router = useRouter();

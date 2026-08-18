@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { ApiError, login, register, requestVerificationCode } from "@/lib/api";
+import { apiErrorMessage, login, register, requestVerificationCode } from "@/lib/api";
 import { clearSessionToken, setSessionToken } from "@/lib/session";
 
 export interface ActionState {
@@ -18,7 +18,7 @@ export async function requestCodeAction(
     await requestVerificationCode(email);
     return { success: true };
   } catch (err) {
-    return { error: err instanceof ApiError ? err.message : "Could not send verification code." };
+    return { error: apiErrorMessage(err, "Could not send verification code.") };
   }
 }
 
@@ -38,7 +38,7 @@ export async function registerAction(
   try {
     auth = await register(payload);
   } catch (err) {
-    return { error: err instanceof ApiError ? err.message : "Registration failed." };
+    return { error: apiErrorMessage(err, "Registration failed.") };
   }
 
   await setSessionToken(auth.token);
@@ -58,7 +58,7 @@ export async function loginAction(
   try {
     auth = await login(email, password);
   } catch (err) {
-    return { error: err instanceof ApiError ? err.message : "Login failed." };
+    return { error: apiErrorMessage(err, "Login failed.") };
   }
 
   await setSessionToken(auth.token);

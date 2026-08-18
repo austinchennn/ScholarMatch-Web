@@ -7,7 +7,7 @@ import {
   enableScholarAction,
   fetchAdminScholarsAction,
 } from "@/app/actions/admin";
-import { ApiError } from "@/lib/api";
+import { apiErrorMessage, ApiError } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -25,13 +25,13 @@ export function AdminDashboard() {
   const disableMutation = useMutation({
     mutationFn: disableScholarAction,
     onSuccess: invalidate,
-    onError: (err) => toast.error(err instanceof ApiError ? err.message : "Could not disable account."),
+    onError: (err) => toast.error(apiErrorMessage(err, "Could not disable account.")),
   });
 
   const enableMutation = useMutation({
     mutationFn: enableScholarAction,
     onSuccess: invalidate,
-    onError: (err) => toast.error(err instanceof ApiError ? err.message : "Could not enable account."),
+    onError: (err) => toast.error(apiErrorMessage(err, "Could not enable account.")),
   });
 
   if (scholarsQuery.isLoading) {

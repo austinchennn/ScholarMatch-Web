@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { createPostingAction } from "@/app/actions/postings";
-import { ApiError } from "@/lib/api";
+import { apiErrorMessage } from "@/lib/api";
 import { track } from "@/lib/analytics";
 import {
   COLLABORATION_TYPES,
@@ -47,7 +47,7 @@ export function NewPostingForm() {
       router.push("/postings");
     },
     onError: (err) => {
-      toast.error(err instanceof ApiError ? err.message : "Could not create posting.");
+      toast.error(apiErrorMessage(err, "Could not create posting."));
     },
   });
 

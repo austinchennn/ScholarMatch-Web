@@ -10,7 +10,7 @@ import {
   fetchPostingsAction,
   unboostPostingAction,
 } from "@/app/actions/postings";
-import { ApiError } from "@/lib/api";
+import { apiErrorMessage } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -30,13 +30,13 @@ export function MyPostings() {
   const acceptMutation = useMutation({
     mutationFn: acceptApplicationAction,
     onSuccess: invalidate,
-    onError: (err) => toast.error(err instanceof ApiError ? err.message : "Could not accept."),
+    onError: (err) => toast.error(apiErrorMessage(err, "Could not accept.")),
   });
 
   const declineMutation = useMutation({
     mutationFn: declineApplicationAction,
     onSuccess: invalidate,
-    onError: (err) => toast.error(err instanceof ApiError ? err.message : "Could not decline."),
+    onError: (err) => toast.error(apiErrorMessage(err, "Could not decline.")),
   });
 
   const closeMutation = useMutation({
@@ -45,7 +45,7 @@ export function MyPostings() {
       toast.success("Posting closed");
       invalidate();
     },
-    onError: (err) => toast.error(err instanceof ApiError ? err.message : "Could not close posting."),
+    onError: (err) => toast.error(apiErrorMessage(err, "Could not close posting.")),
   });
 
   const boostMutation = useMutation({
@@ -54,13 +54,13 @@ export function MyPostings() {
       toast.success("Posting boosted");
       invalidate();
     },
-    onError: (err) => toast.error(err instanceof ApiError ? err.message : "Could not boost posting."),
+    onError: (err) => toast.error(apiErrorMessage(err, "Could not boost posting.")),
   });
 
   const unboostMutation = useMutation({
     mutationFn: (postingId: string) => unboostPostingAction(postingId),
     onSuccess: invalidate,
-    onError: (err) => toast.error(err instanceof ApiError ? err.message : "Could not unboost posting."),
+    onError: (err) => toast.error(apiErrorMessage(err, "Could not unboost posting.")),
   });
 
   if (postingsQuery.isLoading) {
