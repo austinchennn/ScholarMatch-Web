@@ -21,7 +21,9 @@ export function EnumSelect({
   return (
     <Select value={value} onValueChange={(v) => onChange(v ?? "")}>
       <SelectTrigger className="w-full">
-        <SelectValue placeholder={placeholder} />
+        <SelectValue placeholder={placeholder}>
+          {(v: string) => (v ? formatEnumLabel(v) : placeholder)}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         {options.map((option) => (
