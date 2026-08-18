@@ -1,23 +1,10 @@
-import { redirect } from "next/navigation";
-import { ApiError, getMatches } from "@/lib/api";
-import { getSessionToken } from "@/lib/session";
+import { getMatches } from "@/lib/api";
+import { requireSessionToken, withAuthRedirect } from "@/lib/session";
 import { MatchesSidebar } from "./MatchesSidebar";
 
 export default async function MatchesLayout({ children }: { children: React.ReactNode }) {
-  const token = await getSessionToken();
-  if (!token) {
-    redirect("/login");
-  }
-
-  let matches;
-  try {
-    matches = await getMatches(token);
-  } catch (err) {
-    if (err instanceof ApiError && err.status === 401) {
-      redirect("/login");
-    }
-    throw err;
-  }
+  const token = await requireSessionToken();
+  const matches = await withAuthRedirect(() => getMatches(token));
 
   return (
     <div className="flex h-[calc(100vh-7.5rem)] min-h-[420px] overflow-hidden rounded-xl ring-1 ring-foreground/10">

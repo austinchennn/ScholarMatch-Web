@@ -1,14 +1,10 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getSessionToken } from "@/lib/session";
+import { requireSessionToken } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import { PostingsBrowse } from "./PostingsBrowse";
 
 export default async function PostingsPage() {
-  const token = await getSessionToken();
-  if (!token) {
-    redirect("/login");
-  }
+  await requireSessionToken();
 
   return (
     <div className="mx-auto w-full max-w-2xl">

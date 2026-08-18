@@ -1,12 +1,8 @@
-import { redirect } from "next/navigation";
-import { getSessionToken } from "@/lib/session";
+import { requireSessionToken } from "@/lib/session";
 import { NewPostingForm } from "./NewPostingForm";
 
 export default async function NewPostingPage() {
-  const token = await getSessionToken();
-  if (!token) {
-    redirect("/login");
-  }
+  await requireSessionToken();
 
   return (
     <div className="mx-auto w-full max-w-lg">
