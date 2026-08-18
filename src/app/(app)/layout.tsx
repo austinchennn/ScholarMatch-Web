@@ -1,26 +1,12 @@
-import { redirect } from "next/navigation";
-import { ApiError, getProfile } from "@/lib/api";
-import { getSessionToken } from "@/lib/session";
+import { getProfile } from "@/lib/api";
+import { requireSessionToken, withAuthRedirect } from "@/lib/session";
 import { Navbar } from "@/components/navbar";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const token = await getSessionToken();
-  if (!token) {
-    redirect("/login");
-  }
-
-  let name = "";
-  let avatarUrl: string | null = null;
-  try {
-    const profile = await getProfile(token);
-    name = `${profile.firstName} ${profile.lastName}`;
-    avatarUrl = profile.avatarUrl ?? null;
-  } catch (err) {
-    if (err instanceof ApiError && err.status === 401) {
-      redirect("/login");
-    }
-    throw err;
-  }
+  const token = await requireSessionToken();
+  const profile = await withAuthRedirect(() => getProfile(token));
+  const name = `${profile.firstName} ${profile.lastName}`;
+  const avatarUrl = profile.avatarUrl ?? null;
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-background">

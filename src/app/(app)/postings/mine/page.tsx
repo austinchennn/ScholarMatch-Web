@@ -1,12 +1,8 @@
-import { redirect } from "next/navigation";
-import { getSessionToken } from "@/lib/session";
+import { requireSessionToken } from "@/lib/session";
 import { MyPostings } from "./MyPostings";
 
 export default async function MyPostingsPage() {
-  const token = await getSessionToken();
-  if (!token) {
-    redirect("/login");
-  }
+  await requireSessionToken();
 
   return (
     <div className="mx-auto w-full max-w-2xl">

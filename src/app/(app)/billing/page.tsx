@@ -1,12 +1,8 @@
-import { redirect } from "next/navigation";
-import { getSessionToken } from "@/lib/session";
+import { requireSessionToken } from "@/lib/session";
 import { BillingView } from "./BillingView";
 
 export default async function BillingPage() {
-  const token = await getSessionToken();
-  if (!token) {
-    redirect("/login");
-  }
+  await requireSessionToken();
 
   return (
     <div className="mx-auto w-full max-w-lg">

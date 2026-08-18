@@ -7,18 +7,10 @@ import {
   deleteAccount,
   requestEmailChangeCode,
 } from "@/lib/api";
-import { clearSessionToken, getSessionToken } from "@/lib/session";
-
-async function requireToken(): Promise<string> {
-  const token = await getSessionToken();
-  if (!token) {
-    redirect("/login");
-  }
-  return token;
-}
+import { clearSessionToken, requireSessionToken } from "@/lib/session";
 
 export async function requestEmailChangeCodeAction(newEmail: string): Promise<void> {
-  const token = await requireToken();
+  const token = await requireSessionToken();
   await requestEmailChangeCode(token, newEmail);
 }
 
@@ -27,7 +19,7 @@ export async function changeEmailAction(
   verificationCode: string,
   currentPassword: string
 ) {
-  const token = await requireToken();
+  const token = await requireSessionToken();
   return changeEmail(token, newEmail, verificationCode, currentPassword);
 }
 
@@ -36,12 +28,12 @@ export async function changePasswordAction(
   newPassword: string,
   confirmNewPassword: string
 ): Promise<void> {
-  const token = await requireToken();
+  const token = await requireSessionToken();
   await changePassword(token, currentPassword, newPassword, confirmNewPassword);
 }
 
 export async function deleteAccountAction(): Promise<void> {
-  const token = await requireToken();
+  const token = await requireSessionToken();
   await deleteAccount(token);
   await clearSessionToken();
   redirect("/");

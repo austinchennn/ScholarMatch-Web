@@ -3,7 +3,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { fetchSubscriptionAction, startCheckoutAction } from "@/app/actions/billing";
-import { ApiError } from "@/lib/api";
+import { apiErrorMessage } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,9 +20,7 @@ export function BillingView() {
       window.location.href = url;
     },
     onError: (err) => {
-      toast.error(
-        err instanceof ApiError ? err.message : "Could not start checkout."
-      );
+      toast.error(apiErrorMessage(err, "Could not start checkout."));
     },
   });
 

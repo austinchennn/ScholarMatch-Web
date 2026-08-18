@@ -1,26 +1,10 @@
-import { redirect } from "next/navigation";
-import { ApiError, getProfile, type ScholarProfile } from "@/lib/api";
-import { getSessionToken } from "@/lib/session";
+import { getProfile } from "@/lib/api";
+import { requireSessionToken, withAuthRedirect } from "@/lib/session";
 import { ProfileEditForm } from "./ProfileEditForm";
 
-async function loadProfile(token: string): Promise<ScholarProfile> {
-  try {
-    return await getProfile(token);
-  } catch (err) {
-    if (err instanceof ApiError && err.status === 401) {
-      redirect("/login");
-    }
-    throw err;
-  }
-}
-
 export default async function ProfileEditPage() {
-  const token = await getSessionToken();
-  if (!token) {
-    redirect("/login");
-  }
-
-  const profile = await loadProfile(token);
+  const token = await requireSessionToken();
+  const profile = await withAuthRedirect(() => getProfile(token));
 
   return (
     <div className="mx-auto w-full max-w-2xl">

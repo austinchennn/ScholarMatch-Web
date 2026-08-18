@@ -1,23 +1,14 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { getNotifications, markNotificationRead, type Notification } from "@/lib/api";
-import { getSessionToken } from "@/lib/session";
-
-async function requireToken(): Promise<string> {
-  const token = await getSessionToken();
-  if (!token) {
-    redirect("/login");
-  }
-  return token;
-}
+import { requireSessionToken } from "@/lib/session";
 
 export async function fetchNotificationsAction(): Promise<Notification[]> {
-  const token = await requireToken();
+  const token = await requireSessionToken();
   return getNotifications(token);
 }
 
 export async function markNotificationReadAction(notificationId: string): Promise<Notification> {
-  const token = await requireToken();
+  const token = await requireSessionToken();
   return markNotificationRead(token, notificationId);
 }

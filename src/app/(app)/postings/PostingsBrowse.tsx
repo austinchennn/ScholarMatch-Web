@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { applyToPostingAction, fetchPostingsAction } from "@/app/actions/postings";
-import type { Posting } from "@/lib/api";
-import { ApiError } from "@/lib/api";
+import { apiErrorMessage, type Posting } from "@/lib/api";
 import { track } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,7 +31,7 @@ function ApplyDialog({ posting }: { posting: Posting }) {
       setMessage("");
     },
     onError: (err) => {
-      toast.error(err instanceof ApiError ? err.message : "Could not apply.");
+      toast.error(apiErrorMessage(err, "Could not apply."));
     },
   });
 

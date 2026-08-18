@@ -1,12 +1,8 @@
-import { redirect } from "next/navigation";
-import { getSessionToken } from "@/lib/session";
+import { requireSessionToken } from "@/lib/session";
 import { AdminDashboard } from "./AdminDashboard";
 
 export default async function AdminPage() {
-  const token = await getSessionToken();
-  if (!token) {
-    redirect("/login");
-  }
+  await requireSessionToken();
 
   return (
     <div className="mx-auto w-full max-w-3xl">

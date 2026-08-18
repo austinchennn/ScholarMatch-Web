@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { redirect } from "next/navigation";
-import { ApiError, getProfile, type ScholarProfile } from "@/lib/api";
-import { getSessionToken } from "@/lib/session";
+import { getProfile } from "@/lib/api";
+import { requireSessionToken, withAuthRedirect } from "@/lib/session";
 import { formatEnumLabel } from "@/lib/enums";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,24 +10,9 @@ import { ScholarAvatar } from "@/components/scholar-avatar";
 import { RecommendFeed } from "@/app/(app)/recommend/RecommendFeed";
 import { SignupTracker } from "./SignupTracker";
 
-async function loadProfile(token: string): Promise<ScholarProfile> {
-  try {
-    return await getProfile(token);
-  } catch (err) {
-    if (err instanceof ApiError && err.status === 401) {
-      redirect("/login");
-    }
-    throw err;
-  }
-}
-
 export default async function DashboardPage() {
-  const token = await getSessionToken();
-  if (!token) {
-    redirect("/login");
-  }
-
-  const profile = await loadProfile(token);
+  const token = await requireSessionToken();
+  const profile = await withAuthRedirect(() => getProfile(token));
   const fullName = `${profile.firstName} ${profile.lastName}`;
   const profileComplete = Boolean(profile.researchDescription?.trim());
 
