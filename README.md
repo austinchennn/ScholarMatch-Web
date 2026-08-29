@@ -35,7 +35,7 @@ messaging for confirmed matches.*
 | Auth | JWT issued by the backend, held server-side in an `httpOnly` cookie (BFF pattern) — see [Architecture notes](#architecture-notes) |
 | Backend | [Spring Boot](https://spring.io/projects/spring-boot) + Postgres/pgvector (`scholarmatch-server`, separate repo) |
 | Toasts/notifications | [Sonner](https://sonner.emilkowal.ski) |
-| Hosting (planned) | [Vercel](https://vercel.com) for this app, [Railway](https://railway.app) for the API |
+| Hosting (planned) | [Vercel](https://vercel.com) for this app, [Railway](https://railway.app) for the API — not yet deployed, see [#41](https://github.com/austinchennn/ScholarMatch-Web/issues/41) |
 
 ## Setup
 
@@ -53,16 +53,27 @@ Open [http://localhost:3000](http://localhost:3000).
 - **Auth is a BFF (backend-for-frontend) pattern**: `src/app/actions/auth.ts` runs
   server-side Server Actions that call the Spring Boot API and store the returned
   JWT in an `httpOnly` cookie (`src/lib/session.ts`) — the token is never exposed
-  to browser JS. `src/lib/api.ts` is the typed fetch wrapper for the backend API.
+  to browser JS. `src/lib/api/` holds the typed fetch client and per-domain
+  wrappers for the backend API.
 - **`API_BASE_URL`** is a server-only env var (no `NEXT_PUBLIC_` prefix) since all
-  API calls happen in Server Components/Actions, not the browser.
+  API calls happen in Server Components/Actions, not the browser. The one
+  `NEXT_PUBLIC_` var is `NEXT_PUBLIC_SITE_URL` (the app's public origin), needed
+  only by `robots.txt`/`sitemap.xml`/OG tags, which are generated without access
+  to server-only env.
 - `scholarmatch-server` has CORS configured (`CORS_ALLOWED_ORIGINS`) for future
   client-side calls, but this app currently calls the API exclusively server-side,
   so CORS isn't actually load-bearing yet.
 - Implemented so far: landing page, register (email verification code → account
-  creation), login, dashboard, and a full profile-edit page. Recommend/connect,
-  matches, messaging, postings, and account settings are not yet ported — see the
-  open issues on this repo for the rest of the roadmap.
+  creation), login, dashboard, full profile-edit, recommend/connect feed, matches
+  + messaging, opportunities (browse / mine / new) and applications, search,
+  public scholar profiles, notifications, account settings, billing/checkout
+  scaffolding, and an admin console. Error boundaries (`error.tsx`,
+  `global-error.tsx`), `not-found.tsx`, `robots.ts`, and `sitemap.ts` are in place.
+- Not yet done for launch: deploy to Vercel + branded domain and email
+  deliverability (#41), a real analytics provider (#39 — `src/lib/analytics.ts`
+  no-ops until then), a live Stripe account and verified checkout (#37), and
+  replacing the placeholder text in `src/app/legal/{terms,privacy}` with
+  lawyer-reviewed copy. See the open issues for the rest of the roadmap.
 
 ## Repo layout
 
