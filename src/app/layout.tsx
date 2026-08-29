@@ -5,6 +5,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/sonner";
 import { AnalyticsPageView } from "./AnalyticsPageView";
+import { SITE_URL } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,6 +22,7 @@ const DESCRIPTION =
   "ScholarMatch matches researchers and students by shared research interests, with a mutual-match feed, private messaging, and a board for open collaboration opportunities.";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: TITLE,
     template: "%s — ScholarMatch",
