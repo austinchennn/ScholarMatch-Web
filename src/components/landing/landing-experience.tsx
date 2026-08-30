@@ -109,7 +109,7 @@ function CapabilityGuide({ capability }: { capability: Capability }) {
           <Icon className="size-5" />
         </span>
         <div>
-          <h2 className="font-heading text-xl font-semibold tracking-tight">
+          <h2 className="font-display text-2xl font-semibold">
             {capability.label}
           </h2>
           <p className="text-sm text-muted-foreground">{capability.tagline}</p>
@@ -150,7 +150,7 @@ function CapabilityIntro() {
       <span className="w-fit rounded-full bg-primary/10 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase ring-1 ring-primary/20">
         For researchers &amp; students
       </span>
-      <h1 className="font-heading text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+      <h1 className="font-display text-4xl font-bold text-balance sm:text-5xl">
         Find your next research collaborator.
       </h1>
       <p className="text-base text-muted-foreground text-pretty">
@@ -391,7 +391,7 @@ export function LandingExperience() {
 
         {/* ---- how it works ---- */}
         <section className="mx-auto w-full max-w-4xl px-6 pt-8 pb-16 sm:px-12">
-          <h2 className="text-center font-heading text-2xl font-semibold tracking-tight">
+          <h2 className="text-center font-display text-3xl font-semibold">
             How it works
           </h2>
           <div className="mt-10 grid gap-8 sm:grid-cols-3">
@@ -432,7 +432,7 @@ export function LandingExperience() {
         {/* ---- closing CTA ---- */}
         <section className="mx-auto w-full max-w-2xl px-6 pb-24 sm:px-12">
           <div className="flex flex-col items-center gap-4 rounded-3xl bg-primary/10 px-6 py-12 text-center ring-1 ring-primary/20 backdrop-blur-sm">
-            <h2 className="font-heading text-xl font-semibold tracking-tight">
+            <h2 className="font-display text-2xl font-semibold">
               Ready to find who to work with next?
             </h2>
             <Button
