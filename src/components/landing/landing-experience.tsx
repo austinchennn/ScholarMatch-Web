@@ -203,7 +203,14 @@ export function LandingExperience() {
       {/* ---- header ---- */}
       <header className="flex items-center justify-between px-6 py-5 sm:px-12">
         <span className="flex items-center gap-2 text-lg font-semibold tracking-tight">
-          <Image src="/logo.png" alt="" width={26} height={26} priority />
+          <Image
+            src="/logo.png"
+            alt=""
+            width={28}
+            height={31}
+            priority
+            className="h-auto w-7"
+          />
           ScholarMatch
         </span>
         <nav className="flex items-center gap-2">
@@ -271,7 +278,7 @@ export function LandingExperience() {
                 height={264}
                 priority
                 data-sm-motion
-                className="relative w-44 drop-shadow-[0_16px_44px_color-mix(in_oklch,var(--primary)_38%,transparent)] [animation:sm-float_10s_ease-in-out_infinite] xl:w-52"
+                className="relative h-auto w-44 drop-shadow-[0_16px_44px_color-mix(in_oklch,var(--primary)_38%,transparent)] [animation:sm-float_10s_ease-in-out_infinite] xl:w-52"
               />
             </div>
 
@@ -344,7 +351,7 @@ export function LandingExperience() {
               alt="ScholarMatch"
               width={140}
               height={154}
-              className="w-20 drop-shadow-[0_10px_30px_color-mix(in_oklch,var(--primary)_35%,transparent)]"
+              className="h-auto w-20 drop-shadow-[0_10px_30px_color-mix(in_oklch,var(--primary)_35%,transparent)]"
             />
             <CapabilityIntro />
             <div className="flex w-full flex-col gap-2">
