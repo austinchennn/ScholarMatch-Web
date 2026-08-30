@@ -115,10 +115,14 @@ export default function RegisterPage() {
               <div className="flex items-start gap-2">
                 <Checkbox
                   id="agreeToTerms"
+                  className="mt-0.5"
                   checked={agreedToTerms}
                   onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
                 />
-                <Label htmlFor="agreeToTerms" className="font-normal text-sm leading-snug">
+                <label
+                  htmlFor="agreeToTerms"
+                  className="text-sm leading-snug select-none"
+                >
                   I agree to the{" "}
                   <Link href="/legal/terms" target="_blank" className="underline">
                     Terms of Service
@@ -127,7 +131,7 @@ export default function RegisterPage() {
                   <Link href="/legal/privacy" target="_blank" className="underline">
                     Privacy Policy
                   </Link>
-                </Label>
+                </label>
               </div>
               {registerState.error && (
                 <p className="text-sm text-destructive">
