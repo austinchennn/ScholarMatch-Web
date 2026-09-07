@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   acceptApplicationAction,
@@ -17,6 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { PostingCard } from "@/components/posting-card";
 
 export function MyPostings() {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const postingsQuery = useQuery({
     queryKey: ["postings", "MINE"],
@@ -29,15 +31,24 @@ export function MyPostings() {
 
   const acceptMutation = useMutation({
     mutationFn: acceptApplicationAction,
-    onSuccess: invalidate,
+    onSuccess: (data) => {
+      invalidate();
+      toast.success("Accepted — opening chat");
+      router.push(`/matches/${data.applicantUserId}`);
+    },
     onError: (err) => toast.error(apiErrorMessage(err, "Could not accept.")),
   });
 
   const declineMutation = useMutation({
-    mutationFn: declineApplicationAction,
-    onSuccess: invalidate,
-    onError: (err) => toast.error(apiErrorMessage(err, "Could not decline.")),
-  });
+  mutationFn: declineApplicationAction,
+  onSuccess: () => {
+    invalidate();
+    toast.success("Application declined");
+  },
+  onError: (err) =>
+    toast.error(apiErrorMessage(err, "Could not decline.")),
+});
+
 
   const closeMutation = useMutation({
     mutationFn: closePostingAction,
