@@ -58,8 +58,9 @@ Only `/api/health` and `/api/auth/**` are reachable without a token; every other
 | Accept an application | POST | `/api/postings/applications/{applicationId}/accept` | Yes |
 | Decline an application | POST | `/api/postings/applications/{applicationId}/decline` | Yes |
 | List my own applications | GET | `/api/postings/applications/mine` | Yes |
-| Send a message (only open between matched users) | POST | `/api/messages` | Yes |
-| Get full conversation with a user (chronological, unpaginated) | GET | `/api/messages/{otherScholarId}` | Yes |
+| List all messageable conversation partners | GET | `/api/conversations` | Yes |
+| Send a message to an authorized conversation partner | POST | `/api/messages` | Yes |
+| Get full conversation with an authorized partner (chronological, unpaginated) | GET | `/api/messages/{otherScholarId}` | Yes |
 | Health check | GET | `/api/health` | No |
 
 Each section below covers method, path, request body, response body, and known gotchas.
@@ -427,6 +428,11 @@ No request body for either. `400 "Application not found"`; `400 "Only the poster
 }
 ```
 
+**Notifications:** reviewing an application also creates a notification for the applicant.
+
+- Accepting sends type `APPLICATION_ACCEPTED_CHAT`. Its `relatedId` is the **poster's scholar id**, not the posting id, so clients can open that conversation directly (for example, `/matches/{relatedId}`).
+- Declining keeps the existing type `APPLICATION_REJECTED` and uses the posting id as `relatedId`.
+
 ### GET /api/postings/applications/mine
 
 **Response 200:** `PostingApplicationDto[]`, most recently applied first. If a referenced posting was since deleted, `postingTitle`/`posterUserId`/`posterName` degrade to `null` rather than the request failing.
@@ -435,7 +441,63 @@ No request body for either. `400 "Application not found"`; `400 "Only the poster
 
 ## Messages (requires `Authorization: Bearer <token>`)
 
-Chat is only open between two scholars with a confirmed mutual match — enforced identically on both endpoints below.
+Chat is open between two scholars when **either** of these conditions is true:
+
+- They have a confirmed mutual match (`collaboration_requests` contains an accepted connection between them), or
+- One scholar has an `ACCEPTED` application on the other scholar's posting. The permission is bidirectional: both the applicant and the poster may send messages and read the conversation.
+
+`PENDING` or `REJECTED` applications and one-sided connection requests do not grant chat access. The same authorization check protects both sending messages and reading conversation history. If the posting behind the accepted application is later deleted, its application row is deleted by database cascade and that chat permission disappears unless the scholars also have a mutual match.
+
+The application-based half of this rule is controlled by the server's `CHAT_ON_ACCEPT_ENABLED` kill switch (default `true`). When disabled, only mutual matches may chat, and application-only partners are also omitted from `GET /api/conversations`.
+
+### GET /api/conversations
+
+Returns every scholar the current user is currently allowed to message: confirmed mutual matches plus both parties of accepted posting applications. This is the conversation/sidebar endpoint; unlike `GET /api/matches`, it includes relationships created by accepted applications.
+
+**Response 200:** `ConversationPartner[]`. Each item contains all fields from a `ScholarDto` (the same object shape returned inside `GET /api/matches`), flattened at the top level, plus `relationship`:
+
+```json
+[
+  {
+    "scholarId": "uuid",
+    "firstName": "Ada",
+    "lastName": "Lovelace",
+    "email": "ada@example.edu",
+    "academicEmailVerified": true,
+    "phoneNumber": null,
+    "institution": "Example University",
+    "academicLevel": "GRADUATE_STUDENT",
+    "researchField": "COMPUTER_SCIENCE",
+    "lookingFor": "RESEARCH_COLLABORATION",
+    "collaborationDescription": null,
+    "researchDescription": null,
+    "weeklyAvailabilityHours": null,
+    "fundingStatus": null,
+    "avatarUrl": null,
+    "hIndex": 0,
+    "totalCitations": 0,
+    "researchInterests": [],
+    "papers": [],
+    "educations": [],
+    "relationship": "APPLICATION"
+  }
+]
+```
+
+`relationship` is server-assigned:
+
+| Value | Meaning |
+|---|---|
+| `MATCH` | The scholars have a confirmed mutual match. |
+| `APPLICATION` | Chat is available because an accepted posting application exists between them. |
+
+**Deduplication and ordering:**
+
+- A scholar appears at most once, deduplicated by `scholarId`.
+- If the same scholar qualifies through both a mutual match and an accepted application, `relationship` is `MATCH`.
+- Partners are ordered by their most recent message, newest first.
+- Partners with no messages yet appear afterward in stable order: matches first, then application-only partners.
+- If the user currently has no authorized conversation partners, the endpoint returns `200 []`, not `404`.
 
 ### POST /api/messages
 
@@ -449,14 +511,15 @@ Chat is only open between two scholars with a confirmed mutual match — enforce
 ```
 `sentAt` is a timezone-free `LocalDateTime` (`yyyy-MM-ddTHH:mm:ss`); the client parses it directly — don't treat it as timezone-aware ISO-8601.
 
-**If the two users have not matched, response 400:**
+**If neither authorization condition is satisfied, response 400:**
 ```json
 { "error": "You can only message users you have matched with" }
 ```
+The error text still says "matched" for compatibility, even though an accepted application now also grants access.
 
 ### GET /api/messages/{otherScholarId}
 
-Returns the full conversation between the caller and `otherScholarId`, ordered chronologically. Not paginated. Same match-gate `400` as sending applies to reading.
+Returns the full conversation between the caller and `otherScholarId`, ordered chronologically. Not paginated. The same mutual-match-or-accepted-application gate applies to reading; unauthorized reads return `400 {"error": "You can only view messages with users you have matched with"}`.
 
 **Response 200:** `MessageDto[]`, same per-item shape as the send response.
 
