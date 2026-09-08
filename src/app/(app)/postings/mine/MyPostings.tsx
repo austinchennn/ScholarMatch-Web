@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -155,10 +156,21 @@ export function MyPostings() {
                         Accept
                       </Button>
                     </div>
+                  ) : application.status === "ACCEPTED" ? (
+                    // The accept mutation redirects to the chat once, but an application
+                    // accepted in an earlier session needs a way back to that conversation.
+                    <div className="flex items-center gap-2">
+                      <Badge>{application.status}</Badge>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        render={
+                          <Link href={`/matches/${application.applicantUserId}`}>Open chat</Link>
+                        }
+                      />
+                    </div>
                   ) : (
-                    <Badge variant={application.status === "ACCEPTED" ? "default" : "secondary"}>
-                      {application.status}
-                    </Badge>
+                    <Badge variant="secondary">{application.status}</Badge>
                   )}
                 </div>
               ))}
