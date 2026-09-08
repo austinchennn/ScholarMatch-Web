@@ -7,6 +7,7 @@ export * from "./client";
 export * from "./auth";
 export * from "./profile";
 export * from "./matches";
+export * from "./conversations";
 export * from "./messages";
 export * from "./recommend";
 export * from "./postings";

@@ -1,10 +1,12 @@
 "use server";
 
 import {
+  getConversations,
   getConversation,
   getMatches,
   getPublicProfile,
   sendMessage,
+  type ConversationPartner,
   type Message,
   type PublicScholarProfile,
   type ScholarProfile,
@@ -14,6 +16,11 @@ import { requireSessionToken } from "@/lib/session";
 export async function fetchMatchesAction(): Promise<ScholarProfile[]> {
   const token = await requireSessionToken();
   return getMatches(token);
+}
+
+export async function fetchConversationsAction(): Promise<ConversationPartner[]> {
+  const token = await requireSessionToken();
+  return getConversations(token);
 }
 
 export async function fetchConversationAction(otherScholarId: string): Promise<Message[]> {

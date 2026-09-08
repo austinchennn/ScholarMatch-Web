@@ -5,55 +5,65 @@ import { usePathname } from "next/navigation";
 import { ScholarAvatar } from "@/components/scholar-avatar";
 import { formatEnumLabel } from "@/lib/enums";
 import { cn } from "@/lib/utils";
-import type { ScholarProfile } from "@/lib/api";
+import type { ConversationPartner } from "@/lib/api";
 
-function dedupeByScholarId(matches: ScholarProfile[]): ScholarProfile[] {
+export function dedupeByScholarId(
+  conversations: ConversationPartner[]
+): ConversationPartner[] {
   const seen = new Set<string>();
-  return matches.filter((match) => {
-    if (seen.has(match.scholarId)) return false;
-    seen.add(match.scholarId);
+  return conversations.filter((conversation) => {
+    if (seen.has(conversation.scholarId)) return false;
+    seen.add(conversation.scholarId);
     return true;
   });
 }
 
-export function MatchesSidebar({ matches: rawMatches }: { matches: ScholarProfile[] }) {
+export function MatchesSidebar({
+  conversations: rawConversations,
+}: {
+  conversations: ConversationPartner[];
+}) {
   const pathname = usePathname();
-  const matches = dedupeByScholarId(rawMatches);
+  const conversations = dedupeByScholarId(rawConversations);
 
   return (
     <aside className="flex w-72 shrink-0 flex-col border-r bg-card">
-      <h1 className="border-b px-4 py-4 text-lg font-semibold">Matches</h1>
+      <h1 className="border-b px-4 py-4 text-lg font-semibold">Chats</h1>
       <div className="min-h-0 flex-1 overflow-y-auto">
-        {matches.length === 0 ? (
+        {conversations.length === 0 ? (
           <p className="p-4 text-sm text-muted-foreground">
-            No matches yet — head to{" "}
+            No chats yet — head to{" "}
             <Link href="/dashboard" className="underline">
               Home
             </Link>{" "}
             to find collaborators.
           </p>
         ) : (
-          matches.map((match) => {
-            const isActive = pathname === `/matches/${match.scholarId}`;
-            const name = `${match.firstName} ${match.lastName}`;
+          conversations.map((conversation) => {
+            const isActive = pathname === `/matches/${conversation.scholarId}`;
+            const name = `${conversation.firstName} ${conversation.lastName}`;
             return (
               <Link
-                key={match.scholarId}
-                href={`/matches/${match.scholarId}`}
+                key={conversation.scholarId}
+                href={`/matches/${conversation.scholarId}`}
                 className={cn(
                   "flex items-center gap-3 border-b px-4 py-3 transition-colors hover:bg-muted",
                   isActive && "bg-muted"
                 )}
               >
-                <ScholarAvatar name={name} avatarUrl={match.avatarUrl} />
+                <ScholarAvatar name={name} avatarUrl={conversation.avatarUrl} />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{name}</p>
-                  {(match.institution || match.researchField) && (
+                  {(conversation.institution || conversation.researchField) && (
                     <p className="truncate text-xs text-muted-foreground">
-                      {match.institution}
-                      {match.institution && match.researchField ? " · " : ""}
-                      {match.researchField && formatEnumLabel(match.researchField)}
+                      {conversation.institution}
+                      {conversation.institution && conversation.researchField ? " · " : ""}
+                      {conversation.researchField &&
+                        formatEnumLabel(conversation.researchField)}
                     </p>
+                  )}
+                  {conversation.relationship === "APPLICATION" && (
+                    <p className="truncate text-xs text-muted-foreground">via posting</p>
                   )}
                 </div>
               </Link>
