@@ -1,10 +1,24 @@
-import { getProfile } from "@/lib/api";
+import { getProfile, ServiceUnavailableError } from "@/lib/api";
 import { requireSessionToken, withAuthRedirect } from "@/lib/session";
 import { Navbar } from "@/components/navbar";
+import { BackendUnavailable } from "@/components/backend-unavailable";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const token = await requireSessionToken();
-  const profile = await withAuthRedirect(() => getProfile(token));
+
+  let profile;
+  try {
+    profile = await withAuthRedirect(() => getProfile(token));
+  } catch (err) {
+    // The backend never answered (redeploy window, restart, network blip) — every page under
+    // this layout would otherwise crash into the generic error boundary. Degrade to a calm,
+    // retryable notice instead. Anything else (including withAuthRedirect's redirect) re-throws.
+    if (err instanceof ServiceUnavailableError) {
+      return <BackendUnavailable />;
+    }
+    throw err;
+  }
+
   const name = `${profile.firstName} ${profile.lastName}`;
   const avatarUrl = profile.avatarUrl ?? null;
 
