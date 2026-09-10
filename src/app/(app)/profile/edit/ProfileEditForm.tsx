@@ -52,6 +52,7 @@ export function ProfileEditForm({ profile }: { profile: ScholarProfile }) {
   );
   const [papers, setPapers] = useState<Paper[]>(profile.papers ?? []);
   const [avatarBase64, setAvatarBase64] = useState<string | undefined>(undefined);
+  const [isAvatarProcessing, setIsAvatarProcessing] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     profile.avatarUrl ?? null
   );
@@ -62,6 +63,7 @@ export function ProfileEditForm({ profile }: { profile: ScholarProfile }) {
   }
 
   function handleSave() {
+    if (isAvatarProcessing) return;
     startTransition(async () => {
       const result = await updateProfileAction({
         phoneNumber,
@@ -98,7 +100,13 @@ export function ProfileEditForm({ profile }: { profile: ScholarProfile }) {
 
   return (
     <div className="flex flex-col gap-8">
-      <AvatarUploadField preview={avatarPreview} onFileSelected={handleAvatarSelected} />
+      <AvatarUploadField
+        preview={avatarPreview}
+        name={`${profile.firstName} ${profile.lastName}`}
+        disabled={isPending}
+        onFileSelected={handleAvatarSelected}
+        onProcessingChange={setIsAvatarProcessing}
+      />
 
       <Separator />
 
@@ -231,7 +239,7 @@ export function ProfileEditForm({ profile }: { profile: ScholarProfile }) {
         <Button variant="outline" onClick={() => router.push("/dashboard")}>
           Cancel
         </Button>
-        <Button onClick={handleSave} disabled={isPending}>
+        <Button onClick={handleSave} disabled={isPending || isAvatarProcessing}>
           {isPending ? "Saving…" : "Save profile"}
         </Button>
       </div>

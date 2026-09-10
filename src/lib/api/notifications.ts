@@ -4,6 +4,8 @@ export interface Notification {
   notificationId: string;
   type: string;
   message: string;
+  actorAvatarUrl?: string | null;
+  actorName?: string | null;
   relatedId?: string | null;
   read: boolean;
   createdAt: string;

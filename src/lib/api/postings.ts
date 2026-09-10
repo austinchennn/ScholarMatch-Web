@@ -4,6 +4,7 @@ export interface Posting {
   postingId: string;
   posterUserId: string;
   posterName: string;
+  posterAvatarUrl?: string | null;
   posterAcademicEmailVerified: boolean;
   title: string;
   description?: string | null;
@@ -25,11 +26,13 @@ export interface PostingApplication {
   postingTitle?: string | null;
   applicantUserId: string;
   applicantName: string;
+  applicantAvatarUrl?: string | null;
   message?: string | null;
   status: "PENDING" | "ACCEPTED" | "REJECTED";
   appliedAt: string;
   posterUserId?: string | null;
   posterName?: string | null;
+  posterAvatarUrl?: string | null;
   posterAcademicEmailVerified?: boolean;
 }
 

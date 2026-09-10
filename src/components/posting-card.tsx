@@ -3,6 +3,7 @@ import type { Posting } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatEnumLabel } from "@/lib/enums";
+import { ScholarAvatar } from "@/components/scholar-avatar";
 
 export function PostingCard({
   posting,
@@ -28,11 +29,14 @@ export function PostingCard({
               </Badge>
             )}
           </div>
-          <CardDescription className="text-[13px]">
-            {posting.posterName}
-            {posting.maxApplicants
-              ? ` · ${posting.applicantCount}/${posting.maxApplicants} applicants`
-              : ` · ${posting.applicantCount} applicants`}
+          <CardDescription className="flex items-center gap-2 text-[13px]">
+            <ScholarAvatar name={posting.posterName} avatarUrl={posting.posterAvatarUrl} size="sm" />
+            <span className="min-w-0 break-words">
+              {posting.posterName}
+              {posting.maxApplicants
+                ? ` · ${posting.applicantCount}/${posting.maxApplicants} applicants`
+                : ` · ${posting.applicantCount} applicants`}
+            </span>
           </CardDescription>
         </div>
         {headerActions}

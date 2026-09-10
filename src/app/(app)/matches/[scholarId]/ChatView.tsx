@@ -84,6 +84,10 @@ export function ChatView({
               key={message.messageId}
               content={message.content}
               isMine={message.senderId === currentScholarId}
+              senderName={otherName}
+              senderAvatarUrl={
+                message.senderAvatarUrl === undefined ? otherAvatarUrl : message.senderAvatarUrl
+              }
             />
           ))
         )}

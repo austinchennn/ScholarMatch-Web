@@ -6,6 +6,7 @@ import { fetchNotificationsAction, markNotificationReadAction } from "@/app/acti
 import type { Notification } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { ScholarAvatar } from "@/components/scholar-avatar";
 
 function linkFor(notification: Notification): string {
   switch (notification.type) {
@@ -64,7 +65,11 @@ export function NotificationsList() {
             }
           >
             <CardContent className="flex items-center justify-between gap-3">
-              <p className="text-sm">{notification.message}</p>
+              <ScholarAvatar
+                name={notification.actorName?.trim() || "Scholar"}
+                avatarUrl={notification.actorAvatarUrl}
+              />
+              <p className="min-w-0 flex-1 break-words text-sm">{notification.message}</p>
               {!notification.read && <Badge>New</Badge>}
             </CardContent>
           </Card>
