@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { fetchApiClient, ApiError } from "./client";
+import { fetchApiClient, ApiError, ServiceUnavailableError } from "./client";
 
 function mockFetchOnce(response: Partial<Response> & { json?: () => Promise<unknown> }) {
   const fetchMock = vi.fn().mockResolvedValue({
@@ -9,6 +9,28 @@ function mockFetchOnce(response: Partial<Response> & { json?: () => Promise<unkn
     json: async () => ({}),
     ...response,
   });
+  vi.stubGlobal("fetch", fetchMock);
+  return fetchMock;
+}
+
+// Queues one outcome per call: a thrown value (network failure) or a response-shaped object.
+function mockFetchSequence(
+  ...outcomes: Array<Error | (Partial<Response> & { json?: () => Promise<unknown> })>
+) {
+  const fetchMock = vi.fn();
+  for (const outcome of outcomes) {
+    if (outcome instanceof Error) {
+      fetchMock.mockRejectedValueOnce(outcome);
+    } else {
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        headers: new Headers(),
+        json: async () => ({}),
+        ...outcome,
+      });
+    }
+  }
   vi.stubGlobal("fetch", fetchMock);
   return fetchMock;
 }
@@ -58,16 +80,16 @@ describe("fetchApiClient.request", () => {
   it("falls back to statusText when the error response has no JSON body", async () => {
     mockFetchOnce({
       ok: false,
-      status: 500,
-      statusText: "Internal Server Error",
+      status: 422,
+      statusText: "Unprocessable Entity",
       json: async () => {
         throw new Error("no body");
       },
     });
 
     await expect(fetchApiClient.request("/api/thing")).rejects.toMatchObject({
-      status: 500,
-      message: "Internal Server Error",
+      status: 422,
+      message: "Unprocessable Entity",
     });
   });
 
@@ -76,5 +98,77 @@ describe("fetchApiClient.request", () => {
     expect(err).toBeInstanceOf(Error);
     expect(err.status).toBe(403);
     expect(err.message).toBe("Forbidden");
+  });
+
+  describe("transient-failure retries", () => {
+    it("retries an idempotent GET past an intermittent 500 and returns the eventual success", async () => {
+      const fetchMock = mockFetchSequence(
+        { ok: false, status: 500, statusText: "Internal Server Error", json: async () => ({}) },
+        { ok: true, status: 200, json: async () => ({ ok: true }) },
+      );
+
+      const result = await fetchApiClient.request<{ ok: boolean }>("/api/thing");
+
+      expect(result).toEqual({ ok: true });
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it("retries after a thrown network error, then succeeds", async () => {
+      const fetchMock = mockFetchSequence(
+        new TypeError("fetch failed"),
+        { ok: true, status: 200, json: async () => ({ ok: true }) },
+      );
+
+      const result = await fetchApiClient.request<{ ok: boolean }>("/api/thing");
+
+      expect(result).toEqual({ ok: true });
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it("gives up after 3 attempts and throws ServiceUnavailableError, not ApiError", async () => {
+      const fetchMock = mockFetchSequence(
+        { ok: false, status: 503, statusText: "Service Unavailable", json: async () => ({}) },
+        { ok: false, status: 503, statusText: "Service Unavailable", json: async () => ({}) },
+        { ok: false, status: 503, statusText: "Service Unavailable", json: async () => ({}) },
+      );
+
+      const err = (await fetchApiClient
+        .request("/api/thing")
+        .catch((e) => e)) as ServiceUnavailableError;
+
+      expect(err).toBeInstanceOf(ServiceUnavailableError);
+      expect(err).not.toBeInstanceOf(ApiError);
+      expect(err.status).toBe(503);
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+    });
+
+    it("does not retry a POST — a 500 surfaces as ApiError on the first attempt", async () => {
+      const fetchMock = mockFetchSequence({
+        ok: false,
+        status: 500,
+        statusText: "Internal Server Error",
+        json: async () => ({ error: "boom" }),
+      });
+
+      const err = (await fetchApiClient
+        .request("/api/thing", { method: "POST", body: "{}" })
+        .catch((e) => e)) as ApiError;
+
+      expect(err).toBeInstanceOf(ApiError);
+      expect(err.status).toBe(500);
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("ServiceUnavailableError keeps the underlying failure as its cause", async () => {
+      const cause = new TypeError("fetch failed");
+      mockFetchSequence(cause, cause, cause);
+
+      const err = (await fetchApiClient
+        .request("/api/thing")
+        .catch((e) => e)) as ServiceUnavailableError;
+
+      expect(err).toBeInstanceOf(ServiceUnavailableError);
+      expect(err.cause).toBe(cause);
+    });
   });
 });
