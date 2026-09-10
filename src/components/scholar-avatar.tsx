@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function initials(name: string): string {
   return name
-    .split(" ")
+    .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
@@ -23,7 +23,7 @@ export function ScholarAvatar({
   return (
     <Avatar size={size} className={className}>
       {avatarUrl && <AvatarImage src={avatarUrl} alt={name} />}
-      <AvatarFallback>{initials(name)}</AvatarFallback>
+      <AvatarFallback>{initials(name) || "?"}</AvatarFallback>
     </Avatar>
   );
 }

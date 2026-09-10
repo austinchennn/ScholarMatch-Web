@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchMyApplicationsAction } from "@/app/actions/postings";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScholarAvatar } from "@/components/scholar-avatar";
 
 const STATUS_VARIANT = {
   PENDING: "outline",
@@ -40,7 +41,14 @@ export function MyApplications() {
               <CardTitle className="text-base">
                 {application.postingTitle ?? "Posting removed"}
               </CardTitle>
-              <CardDescription>{application.posterName ?? "Unknown poster"}</CardDescription>
+              <CardDescription className="flex items-center gap-2">
+                <ScholarAvatar
+                  name={application.posterName ?? "Unknown poster"}
+                  avatarUrl={application.posterAvatarUrl}
+                  size="sm"
+                />
+                <span>{application.posterName ?? "Unknown poster"}</span>
+              </CardDescription>
             </div>
             <Badge variant={STATUS_VARIANT[application.status]}>{application.status}</Badge>
           </CardHeader>

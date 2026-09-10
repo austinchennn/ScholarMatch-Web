@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { PostingCard } from "@/components/posting-card";
+import { ScholarAvatar } from "@/components/scholar-avatar";
 
 export function MyPostings() {
   const router = useRouter();
@@ -130,13 +131,19 @@ export function MyPostings() {
               {posting.applications.map((application) => (
                 <div
                   key={application.applicationId}
-                  className="flex items-center justify-between gap-3 rounded-lg border p-3"
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3"
                 >
-                  <div>
-                    <p className="text-sm font-medium">{application.applicantName}</p>
-                    {application.message && (
-                      <p className="text-sm text-muted-foreground">{application.message}</p>
-                    )}
+                  <div className="flex min-w-0 items-center gap-3">
+                    <ScholarAvatar
+                      name={application.applicantName}
+                      avatarUrl={application.applicantAvatarUrl}
+                    />
+                    <div className="min-w-0 break-words">
+                      <p className="text-sm font-medium">{application.applicantName}</p>
+                      {application.message && (
+                        <p className="text-sm text-muted-foreground">{application.message}</p>
+                      )}
+                    </div>
                   </div>
                   {application.status === "PENDING" ? (
                     <div className="flex gap-2">

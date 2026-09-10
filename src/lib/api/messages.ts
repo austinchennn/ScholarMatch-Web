@@ -3,6 +3,7 @@ import { fetchApiClient, type ApiClient } from "./client";
 export interface Message {
   messageId: string;
   senderId: string;
+  senderAvatarUrl?: string | null;
   receiverId: string;
   content: string;
   sentAt: string;
